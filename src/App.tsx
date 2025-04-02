@@ -9,7 +9,9 @@ type Message = {
 
 function App() {
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([
+    { text: "Hi, I'm Strategy Buddy. How can I help you?", isUser: false }
+  ]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
