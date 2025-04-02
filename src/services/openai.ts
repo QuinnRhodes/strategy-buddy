@@ -37,7 +37,17 @@ export async function sendMessage(message: string) {
       // Get the latest message from the thread
       const messages = await openai.beta.threads.messages.list(threadId);
       const latestMessage = messages.data[0];
-      return latestMessage.content[0].text.value;
+      
+      // Get the text content from the message
+      const textContent = latestMessage.content.find(
+        (c) => c.type === 'text'
+      );
+
+      if (textContent?.type === 'text') {
+        return textContent.text.value;
+      } else {
+        return 'No text response available';
+      }
     } else {
       throw new Error(`Run ended with status: ${response.status}`);
     }
