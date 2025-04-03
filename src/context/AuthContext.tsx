@@ -4,7 +4,7 @@ import { supabase } from '../services/supabase';
 import type { Subscription } from '../services/supabase';
 
 // Add test emails that don't need subscription
-const TEST_EMAILS = ['test@strategybuddy.com', 'test1@strategybuddy.com'];
+const TEST_EMAILS = ['test@strategybuddy.com', 'test1@strategybuddy.com', 'quinnnumber7@gmail.com'];
 
 type AuthContextType = {
   user: User | null;
