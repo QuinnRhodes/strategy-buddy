@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      // Set user regardless of email verification status
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchSubscription(session.user.id);
@@ -42,6 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Listen for auth changes
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
       async (_, session) => {
+        // Set user regardless of email verification status
         setUser(session?.user ?? null);
         if (session?.user) {
           fetchSubscription(session.user.id);

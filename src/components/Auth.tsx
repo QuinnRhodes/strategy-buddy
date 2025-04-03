@@ -67,6 +67,13 @@ export function Auth() {
           providers={['google']}
           redirectTo={window.location.origin}
           view={authView}
+          showLinks={false}
+          emailRedirectTo={window.location.origin}
+          // Disable email verification requirement
+          authOptions={{
+            autoConfirmSignUp: true,
+            emailRedirectTo: window.location.origin
+          }}
         />
         
         <div className="auth-options">
