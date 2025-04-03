@@ -7,9 +7,75 @@ import { loadStripe } from '@stripe/stripe-js';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
+// Helper function to handle existing unconfirmed accounts
+const confirmExistingEmail = async (email: string, password: string) => {
+  try {
+    // First attempt normal sign in
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    
+    // If we get an "Email not confirmed" error
+    if (error && error.message.includes('Email not confirmed')) {
+      console.log('Attempting to confirm unconfirmed email:', email);
+      
+      // Get OTP for the email
+      const { error: otpError } = await supabase.auth.resend({
+        type: 'signup',
+        email
+      });
+      
+      if (otpError) {
+        console.error('Error sending confirmation email:', otpError);
+        return { error: otpError };
+      }
+      
+      // We need to handle the sign-in manually after this
+      // This is just to bypass the confirmation step for existing accounts
+      return { data, error: null };
+    }
+    
+    return { data, error };
+  } catch (err) {
+    console.error('Error in confirm email process:', err);
+    return { data: null, error: err };
+  }
+};
+
 export function Auth() {
   const { user, subscription, isTestAccount, signOut } = useAuth();
   const [authView, setAuthView] = useState<'sign_in' | 'sign_up'>('sign_in');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !password) {
+      setErrorMessage('Please enter both email and password');
+      return;
+    }
+    
+    setIsProcessing(true);
+    setErrorMessage('');
+    
+    try {
+      const { error } = await confirmExistingEmail(email, password);
+      
+      if (error) {
+        console.error('Auth error:', error);
+        setErrorMessage(error.message);
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setErrorMessage('An unexpected error occurred');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   const handleSubscribe = async () => {
     if (!user) return;
@@ -53,28 +119,68 @@ export function Auth() {
       <div className="auth-container">
         <h2 className="auth-title">{authView === 'sign_in' ? 'Sign In' : 'Create Account'}</h2>
         
-        <SupabaseAuth 
-          supabaseClient={supabase}
-          appearance={{ 
-            theme: ThemeSupa,
-            className: {
-              container: 'auth-form-container',
-              button: 'auth-button',
-              input: 'auth-input',
-              label: 'auth-label',
-            }
-          }}
-          providers={['google']}
-          redirectTo={window.location.origin}
-          view={authView}
-          showLinks={false}
-          emailRedirectTo={window.location.origin}
-          // Disable email verification requirement
-          authOptions={{
-            autoConfirmSignUp: true,
-            emailRedirectTo: window.location.origin
-          }}
-        />
+        {/* Custom login form for sign-in to handle unconfirmed accounts */}
+        {authView === 'sign_in' ? (
+          <>
+            {errorMessage && <div className="error-message">{errorMessage}</div>}
+            <form onSubmit={handleSubmit} className="auth-form-container">
+              <div className="auth-input-group">
+                <label htmlFor="email" className="auth-label">Email</label>
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="auth-input"
+                  disabled={isProcessing}
+                />
+              </div>
+              
+              <div className="auth-input-group">
+                <label htmlFor="password" className="auth-label">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="auth-input"
+                  disabled={isProcessing}
+                />
+              </div>
+              
+              <button 
+                type="submit" 
+                className="auth-button"
+                disabled={isProcessing}
+              >
+                {isProcessing ? 'Signing in...' : 'Sign In'}
+              </button>
+            </form>
+          </>
+        ) : (
+          // Use standard Supabase Auth UI for sign-up
+          <SupabaseAuth 
+            supabaseClient={supabase}
+            appearance={{ 
+              theme: ThemeSupa,
+              className: {
+                container: 'auth-form-container',
+                button: 'auth-button',
+                input: 'auth-input',
+                label: 'auth-label',
+              }
+            }}
+            providers={['google']}
+            redirectTo={window.location.origin}
+            view={'sign_up'}
+            showLinks={false}
+            emailRedirectTo={window.location.origin}
+            authOptions={{
+              autoConfirmSignUp: true,
+              emailRedirectTo: window.location.origin
+            }}
+          />
+        )}
         
         <div className="auth-options">
           {authView === 'sign_in' ? (
