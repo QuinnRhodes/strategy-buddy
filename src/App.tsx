@@ -10,7 +10,7 @@ type Message = {
 }
 
 function App() {
-  const { user, subscription, loading, isTestAccount } = useAuth();
+  const { user, subscription, loading, isTestAccount, signOut } = useAuth();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     { text: "Hi, I'm Strategy Buddy. How can I help you?", isUser: false }
@@ -54,13 +54,20 @@ function App() {
   };
 
   if (loading) {
-    return <div className="loading-container">Loading...</div>;
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading Strategy Buddy...</p>
+      </div>
+    );
   }
 
   // First check if user is not logged in
   if (!user) {
     return (
       <div className="app-container">
+        <h1 className="app-title">Strategy Buddy</h1>
+        <p className="app-description">Your AI strategy assistant</p>
         <Auth />
       </div>
     );
@@ -70,6 +77,7 @@ function App() {
   if (!isTestAccount && (!subscription?.status || subscription.status !== 'active')) {
     return (
       <div className="app-container">
+        <h1 className="app-title">Strategy Buddy</h1>
         <Auth />
       </div>
     );
@@ -78,13 +86,20 @@ function App() {
   // Show chat interface for authenticated and subscribed users
   return (
     <div className="app-container">
+      <div className="app-header">
+        <h1 className="app-title">Strategy Buddy</h1>
+        <button onClick={signOut} className="sign-out-button">
+          Sign Out
+        </button>
+      </div>
+      
       <div className="chat-container">
         {messages.map((message, index) => (
           <div
             key={index}
             className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
           >
-            {message.text}
+            <div className="message-bubble">{message.text}</div>
           </div>
         ))}
         {isLoading && (
@@ -103,11 +118,12 @@ function App() {
             >
               <path d="M21 12a9 9 0 1 1-6.219-8.56" />
             </svg>
-            Thinking...
+            <span>Thinking...</span>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
+      
       <form onSubmit={handleSubmit} className="input-form">
         <input
           type="text"
@@ -115,8 +131,14 @@ function App() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Send a message..."
           disabled={isLoading}
+          className="message-input"
+          aria-label="Message input"
         />
-        <button type="submit" disabled={isLoading}>
+        <button 
+          type="submit" 
+          disabled={isLoading} 
+          className="send-button"
+        >
           {isLoading ? 'Sending...' : 'Send'}
         </button>
       </form>

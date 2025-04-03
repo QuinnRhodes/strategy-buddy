@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Auth as SupabaseAuth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '../services/supabase';
@@ -7,7 +8,8 @@ import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 export function Auth() {
-  const { user, subscription, isTestAccount } = useAuth();
+  const { user, subscription, isTestAccount, signOut } = useAuth();
+  const [authView, setAuthView] = useState<'sign_in' | 'sign_up'>('sign_in');
 
   const handleSubscribe = async () => {
     if (!user) return;
@@ -49,14 +51,47 @@ export function Auth() {
   if (!user) {
     return (
       <div className="auth-container">
+        <h2 className="auth-title">{authView === 'sign_in' ? 'Sign In' : 'Create Account'}</h2>
+        
         <SupabaseAuth 
           supabaseClient={supabase}
-          appearance={{ theme: ThemeSupa }}
+          appearance={{ 
+            theme: ThemeSupa,
+            className: {
+              container: 'auth-form-container',
+              button: 'auth-button',
+              input: 'auth-input',
+              label: 'auth-label',
+            }
+          }}
           providers={['google']}
           redirectTo={window.location.origin}
-          showLinks={false}
-          view="sign_in"
+          view={authView}
         />
+        
+        <div className="auth-options">
+          {authView === 'sign_in' ? (
+            <p>
+              Don't have an account?{' '}
+              <button 
+                onClick={() => setAuthView('sign_up')} 
+                className="text-button"
+              >
+                Create one
+              </button>
+            </p>
+          ) : (
+            <p>
+              Already have an account?{' '}
+              <button 
+                onClick={() => setAuthView('sign_in')} 
+                className="text-button"
+              >
+                Sign in
+              </button>
+            </p>
+          )}
+        </div>
       </div>
     );
   }
@@ -67,9 +102,19 @@ export function Auth() {
       <div className="subscription-container">
         <h2>Subscribe to Continue</h2>
         <p>Get unlimited access to Strategy Buddy</p>
-        <button onClick={handleSubscribe} className="subscribe-button">
-          Subscribe Now
-        </button>
+        
+        <div className="subscription-actions">
+          <button onClick={handleSubscribe} className="subscribe-button">
+            Subscribe Now
+          </button>
+          
+          <button 
+            onClick={() => signOut()} 
+            className="back-button"
+          >
+            Back to Sign In
+          </button>
+        </div>
       </div>
     );
   }
