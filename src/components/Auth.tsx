@@ -32,7 +32,7 @@ const confirmExistingEmail = async (
       
       if (otpError) {
         console.error('Error sending confirmation email:', otpError);
-        return { error: otpError };
+        return { data: null, error: otpError };
       }
       
       // We need to handle the sign-in manually after this
@@ -43,7 +43,7 @@ const confirmExistingEmail = async (
     return { data, error };
   } catch (err) {
     console.error('Error in confirm email process:', err);
-    return { data: null, error: err };
+    return { data: null, error: err as { message: string } };
   }
 };
 
@@ -175,14 +175,9 @@ export function Auth() {
               }
             }}
             providers={['google']}
-            redirectTo={window.location.origin}
+            redirectTo={window.location.origin.replace('3000', '5173')}
             view={'sign_up'}
             showLinks={false}
-            emailRedirectTo={window.location.origin.replace('3000', '5173')}
-            authOptions={{
-              autoConfirmSignUp: true,
-              emailRedirectTo: window.location.origin.replace('3000', '5173')
-            }}
           />
         )}
         
