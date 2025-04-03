@@ -1,5 +1,8 @@
 import OpenAI from 'openai';
 
+console.log('VITE_OPENAI_API_KEY:', import.meta.env.VITE_OPENAI_API_KEY);
+console.log('VITE_ASSISTANT_ID:', import.meta.env.VITE_ASSISTANT_ID);
+
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
   dangerouslyAllowBrowser: true // Note: In production, you should use a backend server

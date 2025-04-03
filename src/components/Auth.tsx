@@ -5,6 +5,7 @@ import { supabase } from '../services/supabase';
 import { useAuth } from '../context/AuthContext';
 import { loadStripe } from '@stripe/stripe-js';
 
+console.log('VITE_STRIPE_PUBLIC_KEY:', import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 // Helper function to handle existing unconfirmed accounts
