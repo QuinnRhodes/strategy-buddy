@@ -213,7 +213,19 @@ export function Auth() {
   }
 
   // Allow test accounts to bypass subscription requirement
-  if (!isTestAccount && (!subscription || subscription.status !== 'active')) {
+  if (isTestAccount) {
+    return (
+      <div className="app-container">
+        <h2>Welcome, Test Account!</h2>
+        <p>You have full access to Strategy Buddy as a test user.</p>
+        <button onClick={signOut} className="sign-out-button">
+          Sign Out
+        </button>
+      </div>
+    );
+  }
+
+  if (!subscription || subscription.status !== 'active') {
     return (
       <div className="subscription-container">
         <h2>Subscribe to Continue</h2>
