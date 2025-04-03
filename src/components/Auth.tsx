@@ -212,6 +212,10 @@ export function Auth() {
     );
   }
 
+  console.log('isTestAccount:', isTestAccount);
+  console.log('user:', user);
+  console.log('subscription:', subscription);
+
   // Allow test accounts to bypass subscription requirement
   if (isTestAccount) {
     return (
