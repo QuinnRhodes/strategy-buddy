@@ -8,7 +8,10 @@ import { loadStripe } from '@stripe/stripe-js';
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 // Helper function to handle existing unconfirmed accounts
-const confirmExistingEmail = async (email: string, password: string) => {
+const confirmExistingEmail = async (
+  email: string,
+  password: string
+): Promise<{ data: any; error: { message: string } | null }> => {
   try {
     // First attempt normal sign in
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -64,7 +67,7 @@ export function Auth() {
     
     try {
       const { error } = await confirmExistingEmail(email, password);
-      
+        setErrorMessage(error?.message || 'An unknown error occurred');
       if (error) {
         console.error('Auth error:', error);
         setErrorMessage(error.message);
@@ -174,10 +177,10 @@ export function Auth() {
             redirectTo={window.location.origin}
             view={'sign_up'}
             showLinks={false}
-            emailRedirectTo={window.location.origin}
+            emailRedirectTo={window.location.origin.replace('3000', '5173')}
             authOptions={{
               autoConfirmSignUp: true,
-              emailRedirectTo: window.location.origin
+              emailRedirectTo: window.location.origin.replace('3000', '5173')
             }}
           />
         )}
