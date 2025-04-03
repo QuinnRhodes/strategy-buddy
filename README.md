@@ -1,54 +1,59 @@
-# React + TypeScript + Vite
+# Strategy Buddy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-powered strategy assistant built with React, TypeScript, Supabase, and OpenAI.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- AI-powered strategy conversations
+- User authentication with Supabase
+- Subscription management with Stripe
+- Real-time chat interface
+- Test account support for development
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+3. Copy `.env.example` to `.env` and fill in your environment variables:
+```bash
+cp .env.example .env
 ```
+
+4. Set up your environment variables:
+- `VITE_OPENAI_API_KEY`: Your OpenAI API key
+- `VITE_ASSISTANT_ID`: Your OpenAI Assistant ID
+- `VITE_SUPABASE_URL`: Your Supabase project URL
+- `VITE_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+- `VITE_STRIPE_PUBLIC_KEY`: Your Stripe publishable key
+
+5. Start the development server:
+```bash
+npm run dev
+```
+
+## Development
+
+To use a test account that bypasses subscription requirements, sign up with:
+- test@strategybuddy.com
+- test1@strategybuddy.com
+
+## Deployment
+
+Build the project for production:
+```bash
+npm run build
+```
+
+## Tech Stack
+
+- React
+- TypeScript
+- Vite
+- Supabase
+- OpenAI
+- Stripe
+- ESLint

@@ -10,13 +10,15 @@ node_modules
 /dist
 /build
 
-# Misc
-.DS_Store
+# Environment Variables
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+.env.*
+!.env.example
+supabase/.env
 
 # Logs
 npm-debug.log*
@@ -34,3 +36,11 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Supabase
+supabase/.temp/
+supabase/.branches/
+
+# System Files
+.DS_Store
+Thumbs.db

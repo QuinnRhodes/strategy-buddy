@@ -157,3 +157,64 @@ button:hover:not(:disabled) {
     max-width: 90%;
   }
 }
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.2rem;
+  color: var(--foreground);
+}
+
+.auth-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--muted);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.subscription-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--muted);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.subscription-container h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.subscription-container p {
+  margin-bottom: 2rem;
+  color: #a1a1aa;
+}
+
+.subscribe-button {
+  background: #22c55e;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.subscribe-button:hover {
+  background: #16a34a;
+}
+
+/* Supabase Auth UI customization */
+.auth-container :where(input, button) {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.auth-container button {
+  margin-top: 0.5rem;
+}

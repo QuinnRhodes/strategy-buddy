@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
 import { sendMessage } from './services/openai'
+import { Auth } from './components/Auth'
+import { useAuth } from './context/AuthContext'
 
 type Message = {
   text: string;
@@ -8,6 +10,7 @@ type Message = {
 }
 
 function App() {
+  const { user, subscription, loading, isTestAccount } = useAuth();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     { text: "Hi, I'm Strategy Buddy. How can I help you?", isUser: false }
@@ -50,6 +53,29 @@ function App() {
     }
   };
 
+  if (loading) {
+    return <div className="loading-container">Loading...</div>;
+  }
+
+  // First check if user is not logged in
+  if (!user) {
+    return (
+      <div className="app-container">
+        <Auth />
+      </div>
+    );
+  }
+
+  // Then check subscription status for logged-in users
+  if (!isTestAccount && (!subscription?.status || subscription.status !== 'active')) {
+    return (
+      <div className="app-container">
+        <Auth />
+      </div>
+    );
+  }
+
+  // Show chat interface for authenticated and subscribed users
   return (
     <div className="app-container">
       <div className="chat-container">
