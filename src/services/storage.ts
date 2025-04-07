@@ -27,7 +27,7 @@ export async function uploadPdf(file: File): Promise<UploadedPdf> {
     const filePath = `pdfs/${fileName}`;
     
     // Upload file to Supabase Storage
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
       .from('strategy-buddy')
       .upload(filePath, file);
       

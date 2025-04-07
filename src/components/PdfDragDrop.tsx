@@ -25,6 +25,7 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
   const [dropZoneActive, setDropZoneActive] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedPdfIds, setSelectedPdfIds] = useState<string[]>([]);
 
   // Handle drag start event
   const handleDragStart = (e: React.DragEvent, pdf: Pdf) => {
@@ -69,11 +70,12 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
     setPdfs(updatedPdfs);
     
     // Notify parent component about selected PDFs
-    const selectedPdfIds = updatedPdfs
+    const newSelectedIds = updatedPdfs
       .filter(pdf => pdf.selected)
       .map(pdf => pdf.id);
     
-    onPdfSelection(selectedPdfIds);
+    setSelectedPdfIds(newSelectedIds);
+    onPdfSelection(newSelectedIds);
   };
 
   // Handle removing a selected PDF
@@ -94,11 +96,12 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
     setPdfs(updatedPdfs);
     
     // Notify parent component about updated selected PDFs
-    const selectedPdfIds = updatedPdfs
+    const newSelectedIds = updatedPdfs
       .filter(pdf => pdf.selected)
       .map(pdf => pdf.id);
     
-    onPdfSelection(selectedPdfIds);
+    setSelectedPdfIds(newSelectedIds);
+    onPdfSelection(newSelectedIds);
   };
 
   // Handle file input change
@@ -138,7 +141,8 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
         ]);
         
         // Update selected PDFs
-        onPdfSelection(prev => [...prev, uploadedPdf.id]);
+        const newSelectedIds = [...selectedPdfIds, uploadedPdf.id];
+        onPdfSelection(newSelectedIds);
       }
     } catch (error: any) {
       console.error('Upload error:', error);
