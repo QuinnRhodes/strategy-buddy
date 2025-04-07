@@ -12,13 +12,13 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 const confirmExistingEmail = async (
   email: string,
   password: string,
-  rememberMe: boolean
+  _rememberMe: boolean // Adding underscore to mark as intentionally unused
 ): Promise<{ data: any; error: { message: string } | null }> => {
   try {
     // First attempt normal sign in
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password,
+      password
     });
     
     // If we get an "Email not confirmed" error
@@ -49,13 +49,25 @@ const confirmExistingEmail = async (
 };
 
 export function Auth() {
-  const { user, subscription, isTestAccount, signOut } = useAuth();
+  const { user, subscription, signOut } = useAuth(); // Removed isTestAccount
   const [authView, setAuthView] = useState<'sign_in' | 'sign_up'>('sign_in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true); // Default to true
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  
+  // Define styles at component level so they're available throughout
+  const buttonStyle = {
+    padding: '10px',
+    background: '#22c55e',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    fontSize: '0.95rem',
+    fontWeight: '500',
+    cursor: 'pointer',
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,17 +188,6 @@ export function Auth() {
       height: '16px',
       cursor: 'pointer',
       accentColor: '#22c55e',
-    };
-
-    const buttonStyle = {
-      padding: '10px',
-      background: '#22c55e',
-      color: 'white',
-      border: 'none',
-      borderRadius: '4px',
-      fontSize: '0.95rem',
-      fontWeight: '500',
-      cursor: 'pointer',
     };
 
     const errorStyle = {
