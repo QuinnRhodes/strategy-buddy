@@ -1,7 +1,5 @@
 import OpenAI from 'openai';
-
-console.log('VITE_OPENAI_API_KEY:', import.meta.env.VITE_OPENAI_API_KEY);
-console.log('VITE_ASSISTANT_ID:', import.meta.env.VITE_ASSISTANT_ID);
+import { getPdfContent } from './storage';
 
 const openai = new OpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -10,7 +8,7 @@ const openai = new OpenAI({
 
 let threadId: string | null = null;
 
-// Mock PDF content for each PDF
+// Mock PDF content for each PDF (used as fallback)
 const pdfContents: Record<string, string> = {
   '1': 'Strategy Guide 1: This document covers the fundamentals of strategic planning, including SWOT analysis, competitive positioning, and market evaluation techniques.',
   '2': 'Best Practices: A compilation of industry best practices for strategy execution, including team organization, milestone tracking, and performance indicators.',
@@ -30,9 +28,19 @@ export async function sendMessage(message: string, selectedPdfIds: string[] = []
     
     if (selectedPdfIds.length > 0) {
       enhancedMessage += '\n\nConsider these documents in your response:\n';
-      selectedPdfIds.forEach(id => {
-        enhancedMessage += `\n--- Document: ${id} ---\n${pdfContents[id]}\n`;
-      });
+      
+      for (const id of selectedPdfIds) {
+        // Check if we have the content in storage first
+        const storedContent = getPdfContent(id);
+        
+        if (storedContent) {
+          // For user-uploaded PDFs, use the content from storage
+          enhancedMessage += `\n--- Document: ${id} ---\n${storedContent}\n`;
+        } else if (pdfContents[id]) {
+          // For pre-defined PDFs, use the mock content
+          enhancedMessage += `\n--- Document: ${id} ---\n${pdfContents[id]}\n`;
+        }
+      }
     }
 
     // Add the message to the thread

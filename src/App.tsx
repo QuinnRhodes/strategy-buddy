@@ -5,6 +5,7 @@ import { Auth } from './components/Auth'
 import { useAuth } from './context/AuthContext'
 import { PdfDragDrop } from './components/PdfDragDrop'
 import './components/PdfDragDrop.css'
+import { getPdfContent } from './services/storage'
 
 type Message = {
   text: string;

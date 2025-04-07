@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import { uploadPdf, deletePdf, UploadedPdf, getUploadedPdfs } from '../services/storage';
 
 type Pdf = {
   id: string;
   name: string;
   icon: string;
   selected: boolean;
+  isCustom?: boolean;
 };
 
+// Initial predefined PDFs
 const initialPdfs: Pdf[] = [
   { id: '1', name: 'Strategy Guide 1', icon: '📄', selected: false },
   { id: '2', name: 'Best Practices', icon: '📑', selected: false },
@@ -20,27 +23,47 @@ interface PdfDragDropProps {
 export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
   const [pdfs, setPdfs] = useState<Pdf[]>(initialPdfs);
   const [dropZoneActive, setDropZoneActive] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Handle drag start event
   const handleDragStart = (e: React.DragEvent, pdf: Pdf) => {
     e.dataTransfer.setData('pdfId', pdf.id);
   };
 
+  // Handle drag over event
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setDropZoneActive(true);
   };
 
+  // Handle drag leave event
   const handleDragLeave = () => {
     setDropZoneActive(false);
   };
 
+  // Handle drop event
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDropZoneActive(false);
     
+    // Check if files are being dropped
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileUpload(e.dataTransfer.files);
+      return;
+    }
+    
+    // Otherwise, handle internal drag of PDF icon
     const pdfId = e.dataTransfer.getData('pdfId');
+    if (pdfId) {
+      selectPdf(pdfId);
+    }
+  };
+
+  // Select a PDF
+  const selectPdf = (id: string) => {
     const updatedPdfs = pdfs.map(pdf => 
-      pdf.id === pdfId ? { ...pdf, selected: true } : pdf
+      pdf.id === id ? { ...pdf, selected: true } : pdf
     );
     
     setPdfs(updatedPdfs);
@@ -53,10 +76,20 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
     onPdfSelection(selectedPdfIds);
   };
 
-  const handleRemovePdf = (id: string) => {
+  // Handle removing a selected PDF
+  const handleRemovePdf = async (id: string) => {
+    // Find the PDF
+    const pdf = pdfs.find(p => p.id === id);
+    
+    // If it's a custom PDF, delete from storage
+    if (pdf?.isCustom) {
+      await deletePdf(id);
+    }
+    
+    // Update state
     const updatedPdfs = pdfs.map(pdf => 
       pdf.id === id ? { ...pdf, selected: false } : pdf
-    );
+    ).filter(pdf => !(pdf.id === id && pdf.isCustom)); // Remove custom PDFs completely
     
     setPdfs(updatedPdfs);
     
@@ -68,20 +101,94 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
     onPdfSelection(selectedPdfIds);
   };
 
+  // Handle file input change
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      handleFileUpload(e.target.files);
+    }
+  };
+
+  // Handle file upload
+  const handleFileUpload = async (files: FileList) => {
+    try {
+      setUploading(true);
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        
+        // Check if file is a PDF
+        if (file.type !== 'application/pdf') {
+          alert(`File ${file.name} is not a PDF`);
+          continue;
+        }
+        
+        // Upload the PDF
+        const uploadedPdf = await uploadPdf(file);
+        
+        // Add to the PDF list
+        setPdfs(prev => [
+          ...prev,
+          {
+            id: uploadedPdf.id,
+            name: uploadedPdf.name,
+            icon: '📝',
+            selected: true,
+            isCustom: true,
+          }
+        ]);
+        
+        // Update selected PDFs
+        onPdfSelection(prev => [...prev, uploadedPdf.id]);
+      }
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      alert(`Failed to upload PDF: ${error.message}`);
+    } finally {
+      setUploading(false);
+      // Reset the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  // Open file dialog
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="pdf-container">
-      <div className="pdf-icons">
-        {pdfs.map(pdf => (
-          <div
-            key={pdf.id}
-            className={`pdf-icon ${pdf.selected ? 'selected' : ''}`}
-            draggable={!pdf.selected}
-            onDragStart={(e) => handleDragStart(e, pdf)}
-          >
-            <span className="icon">{pdf.icon}</span>
-            <span className="name">{pdf.name}</span>
-          </div>
-        ))}
+      <div className="pdf-sidebar">
+        <h3 className="pdf-sidebar-title">Reference Documents</h3>
+        <div className="pdf-icons">
+          {pdfs.filter(pdf => !pdf.selected).map(pdf => (
+            <div
+              key={pdf.id}
+              className={`pdf-icon ${pdf.selected ? 'selected' : ''}`}
+              draggable={!pdf.selected}
+              onDragStart={(e) => handleDragStart(e, pdf)}
+            >
+              <span className="icon">{pdf.icon}</span>
+              <span className="name">{pdf.name}</span>
+            </div>
+          ))}
+        </div>
+        <button 
+          className="upload-button"
+          onClick={handleUploadClick} 
+          disabled={uploading}
+        >
+          {uploading ? 'Uploading...' : 'Upload PDF'}
+        </button>
+        <input 
+          type="file" 
+          ref={fileInputRef}
+          accept=".pdf"
+          multiple
+          style={{ display: 'none' }} 
+          onChange={handleFileInputChange}
+        />
       </div>
       <div
         className={`drop-zone ${dropZoneActive ? 'active' : ''}`}
@@ -89,20 +196,31 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
-        <p>Drag PDFs here to include in the conversation</p>
-        <div className="selected-pdfs">
-          {pdfs.filter(pdf => pdf.selected).map(pdf => (
-            <div key={pdf.id} className="selected-pdf">
-              <span>{pdf.icon} {pdf.name}</span>
-              <button 
-                className="remove-pdf" 
-                onClick={() => handleRemovePdf(pdf.id)}
-              >
-                &times;
-              </button>
+        {pdfs.some(pdf => pdf.selected) ? (
+          <>
+            <h3>Selected Documents</h3>
+            <div className="selected-pdfs">
+              {pdfs.filter(pdf => pdf.selected).map(pdf => (
+                <div key={pdf.id} className="selected-pdf">
+                  <span>{pdf.icon} {pdf.name}</span>
+                  <button 
+                    className="remove-pdf" 
+                    onClick={() => handleRemovePdf(pdf.id)}
+                    aria-label={`Remove ${pdf.name}`}
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          <>
+            <div className="drop-icon">📄</div>
+            <p>Drag PDFs here to include in the conversation</p>
+            <p className="drop-subtitle">or drop files to upload</p>
+          </>
+        )}
       </div>
     </div>
   );
