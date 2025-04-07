@@ -6,6 +6,8 @@ import { useAuth } from './context/AuthContext'
 import { PdfDragDrop } from './components/PdfDragDrop'
 import './components/PdfDragDrop.css'
 
+// Version 1.2.0 - Fixed TypeScript errors
+
 type Message = {
   text: string;
   isUser: boolean;
