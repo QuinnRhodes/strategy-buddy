@@ -11,13 +11,18 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 // Helper function to handle existing unconfirmed accounts
 const confirmExistingEmail = async (
   email: string,
-  password: string
+  password: string,
+  rememberMe: boolean
 ): Promise<{ data: any; error: { message: string } | null }> => {
   try {
     // First attempt normal sign in
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password
+      password,
+      options: {
+        // Use the rememberMe flag to control session persistence
+        persistSession: rememberMe
+      }
     });
     
     // If we get an "Email not confirmed" error
@@ -52,6 +57,7 @@ export function Auth() {
   const [authView, setAuthView] = useState<'sign_in' | 'sign_up'>('sign_in');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [rememberMe, setRememberMe] = useState(true); // Default to true
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -67,8 +73,7 @@ export function Auth() {
     setErrorMessage('');
     
     try {
-      const { error } = await confirmExistingEmail(email, password);
-        setErrorMessage(error?.message || 'An unknown error occurred');
+      const { error } = await confirmExistingEmail(email, password, rememberMe);
       if (error) {
         console.error('Auth error:', error);
         setErrorMessage(error.message);
@@ -150,6 +155,18 @@ export function Auth() {
                   className="auth-input"
                   disabled={isProcessing}
                 />
+              </div>
+              
+              <div className="auth-remember-me">
+                <label className="remember-me-label">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    disabled={isProcessing}
+                  />
+                  <span>Remember me</span>
+                </label>
               </div>
               
               <button 
