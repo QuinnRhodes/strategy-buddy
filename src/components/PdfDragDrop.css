@@ -17,6 +17,7 @@
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
   color: var(--foreground);
+  font-family: 'Marines', sans-serif;
 }
 
 .pdf-icons {
@@ -38,6 +39,7 @@
   cursor: grab;
   transition: all 0.2s;
   user-select: none;
+  border: 1px solid var(--border);
 }
 
 .pdf-icon.selected {
@@ -46,7 +48,8 @@
 }
 
 .pdf-icon:hover:not(.selected) {
-  background: #3f3f46;
+  background: #e4e4e7;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .pdf-icon .icon {
@@ -70,23 +73,31 @@
   justify-content: center;
   transition: all 0.2s;
   min-height: 150px;
+  background: var(--muted);
 }
 
 .drop-zone.active {
-  border-color: #22c55e;
-  background: rgba(34, 197, 94, 0.1);
+  border-color: var(--primary);
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.drop-zone h3 {
+  font-family: 'Marines', sans-serif;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
 }
 
 .drop-icon {
   font-size: 3rem;
   margin-bottom: 1rem;
   opacity: 0.7;
+  color: var(--primary);
 }
 
 .drop-subtitle {
   margin-top: 0.5rem;
   font-size: 0.9rem;
-  color: #a1a1aa;
+  color: #71717a;
 }
 
 .selected-pdfs {
@@ -100,7 +111,7 @@
 }
 
 .selected-pdf {
-  background: var(--muted);
+  background: white;
   padding: 0.75rem 1rem;
   border-radius: 4px;
   font-size: 0.9rem;
@@ -108,11 +119,13 @@
   justify-content: space-between;
   align-items: center;
   word-break: break-word;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .remove-pdf {
   background: transparent;
-  color: var(--foreground);
+  color: #71717a;
   border: none;
   cursor: pointer;
   font-size: 1.2rem;
@@ -125,23 +138,24 @@
 
 .remove-pdf:hover {
   opacity: 1;
-  color: #ef4444;
+  color: var(--danger);
 }
 
 .upload-button {
   margin-top: 1rem;
   padding: 0.75rem;
-  background: #3f3f46;
-  color: var(--foreground);
+  background: var(--primary);
+  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.9rem;
   transition: background-color 0.2s;
+  font-weight: 500;
 }
 
 .upload-button:hover {
-  background: #52525b;
+  background: var(--primary-hover);
 }
 
 .upload-button:disabled {

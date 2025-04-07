@@ -1,0 +1,8 @@
+/* Marines Font */
+@import url('https://fonts.cdnfonts.com/css/marines');
+
+/* Font classes */
+.font-marines {
+  font-family: 'Marines', sans-serif;
+  letter-spacing: 1px;
+}

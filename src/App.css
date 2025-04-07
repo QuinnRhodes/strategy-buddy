@@ -1,10 +1,11 @@
 :root {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --muted: #27272a;
-  --border: #27272a;
-  --bubble-user: #18181b;
-  --bubble-ai: #27272a;
+  /* Light Theme */
+  --background: #ffffff;
+  --foreground: #09090b;
+  --muted: #f5f5f5;
+  --border: #e4e4e7;
+  --bubble-user: #f0f9ff;
+  --bubble-ai: #f1f5f9;
   --primary: #22c55e;
   --primary-hover: #16a34a;
   --danger: #ef4444;
@@ -31,23 +32,28 @@
 }
 
 .app-title {
-  font-size: 1.5rem;
+  font-family: 'Marines', sans-serif;
+  font-size: 2rem;
   font-weight: 600;
   margin: 0;
+  color: var(--primary);
+  letter-spacing: 1.2px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
 }
 
 .app-description {
-  color: #a1a1aa;
+  color: #71717a;
   margin: 0.5rem 0 1.5rem;
 }
 
 .sign-out-button {
   background: transparent;
-  color: #a1a1aa;
+  color: #71717a;
   border: 1px solid var(--border);
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   transition: all 0.2s;
+  border-radius: 4px;
 }
 
 .sign-out-button:hover {
@@ -55,6 +61,7 @@
   color: var(--foreground);
 }
 
+/* Chat container and messages */
 .chat-container {
   flex: 1;
   overflow-y: auto;
@@ -77,6 +84,7 @@
   line-height: 1.6;
   font-size: 0.95rem;
   border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 @keyframes fadeIn {
@@ -96,6 +104,7 @@
 
 .user-message .message-bubble {
   background: var(--bubble-user);
+  border-color: #bae6fd;
 }
 
 .ai-message {
@@ -107,7 +116,7 @@
 }
 
 .loading {
-  color: #a1a1aa;
+  color: #71717a;
   font-size: 0.95rem;
   margin: 16px 0;
   display: flex;
@@ -116,9 +125,9 @@
 }
 
 .loading-spinner {
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  border: 3px solid rgba(0, 0, 0, 0.1);
   border-radius: 50%;
-  border-top: 3px solid var(--foreground);
+  border-top: 3px solid var(--primary);
   width: 24px;
   height: 24px;
   animation: spin 1s linear infinite;
@@ -138,6 +147,7 @@
   }
 }
 
+/* Input form */
 .input-form {
   display: flex;
   gap: 12px;
@@ -150,18 +160,21 @@
 .message-input {
   flex: 1;
   padding: 12px 16px;
-  background: transparent;
-  border: none;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 4px;
   color: var(--foreground);
   font-size: 0.95rem;
 }
 
 .message-input::placeholder {
-  color: #71717a;
+  color: #a1a1aa;
 }
 
 .message-input:focus {
   outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.2);
 }
 
 .message-input:disabled {
@@ -171,14 +184,14 @@
 
 .send-button {
   padding: 8px 16px;
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--primary);
+  color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: opacity 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .send-button:disabled {
@@ -187,9 +200,10 @@
 }
 
 .send-button:hover:not(:disabled) {
-  opacity: 0.9;
+  background: var(--primary-hover);
 }
 
+/* Responsive styles */
 @media (max-width: 768px) {
   .app-container {
     padding: 16px;
@@ -200,6 +214,7 @@
   }
 }
 
+/* Loading and auth containers */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -217,6 +232,7 @@
   background: var(--muted);
   border-radius: 8px;
   border: 1px solid var(--border);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .subscription-container {
@@ -227,16 +243,19 @@
   border-radius: 8px;
   border: 1px solid var(--border);
   text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .subscription-container h2 {
   margin-bottom: 1rem;
   font-size: 1.5rem;
+  font-family: 'Marines', sans-serif;
+  color: var(--primary);
 }
 
 .subscription-container p {
   margin-bottom: 2rem;
-  color: #a1a1aa;
+  color: #71717a;
 }
 
 .subscribe-button {
