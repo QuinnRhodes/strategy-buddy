@@ -10,9 +10,9 @@ let threadId: string | null = null;
 
 // Mock PDF content for each PDF (used as fallback)
 const pdfContents: Record<string, string> = {
-  '1': 'Strategy Guide 1: This document covers the fundamentals of strategic planning, including SWOT analysis, competitive positioning, and market evaluation techniques.',
-  '2': 'Best Practices: A compilation of industry best practices for strategy execution, including team organization, milestone tracking, and performance indicators.',
-  '3': 'Case Studies: In-depth analysis of successful strategic implementations in various industries, with lessons learned and actionable takeaways.'
+  '1': 'Market Analysis Report: Comprehensive analysis of current market trends, competitor positioning, and growth opportunities. Includes market size data, segmentation analysis, consumer behavior insights, and emerging trends that could impact strategic decision-making.',
+  '2': 'Competitive Landscape Guide: Detailed profiles of key industry competitors with strengths and weaknesses analysis. Features competitive positioning maps, benchmark data on product offerings, pricing strategies, and market share information.',
+  '3': 'Strategic Planning Template: Framework for developing comprehensive business strategies with sections on mission statement development, goal setting, action planning, resource allocation, and performance measurement. Includes examples of successful strategic initiatives.'
 };
 
 export async function sendMessage(message: string, selectedPdfIds: string[] = []) {

@@ -11,9 +11,9 @@ type Pdf = {
 
 // Initial predefined PDFs
 const initialPdfs: Pdf[] = [
-  { id: '1', name: 'Strategy Guide 1', icon: '📄', selected: false },
-  { id: '2', name: 'Best Practices', icon: '📑', selected: false },
-  { id: '3', name: 'Case Studies', icon: '📋', selected: false },
+  { id: '1', name: 'Market Analysis Report', icon: '📊', selected: false },
+  { id: '2', name: 'Competitive Landscape Guide', icon: '🔍', selected: false },
+  { id: '3', name: 'Strategic Planning Template', icon: '📝', selected: false },
 ];
 
 interface PdfDragDropProps {
