@@ -3,6 +3,8 @@ import './App.css'
 import { sendMessage } from './services/openai'
 import { Auth } from './components/Auth'
 import { useAuth } from './context/AuthContext'
+import { PdfDragDrop } from './components/PdfDragDrop'
+import './components/PdfDragDrop.css'
 
 type Message = {
   text: string;
@@ -16,6 +18,7 @@ function App() {
     { text: "Hi, I'm Strategy Buddy. How can I help you?", isUser: false }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedPdfIds, setSelectedPdfIds] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -37,8 +40,8 @@ function App() {
     setIsLoading(true);
 
     try {
-      // Get AI response
-      const response = await sendMessage(input);
+      // Get AI response, passing selected PDFs
+      const response = await sendMessage(input, selectedPdfIds);
       const aiMessage: Message = { text: response || 'No response', isUser: false };
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
@@ -51,6 +54,10 @@ function App() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handlePdfSelection = (pdfIds: string[]) => {
+    setSelectedPdfIds(pdfIds);
   };
 
   if (loading) {
@@ -92,7 +99,7 @@ function App() {
           Sign Out
         </button>
       </div>
-      
+      <PdfDragDrop onPdfSelection={handlePdfSelection} />
       <div className="chat-container">
         {messages.map((message, index) => (
           <div

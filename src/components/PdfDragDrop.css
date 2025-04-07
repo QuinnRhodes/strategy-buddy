@@ -1,0 +1,93 @@
+.pdf-container {
+  display: flex;
+  gap: 2rem;
+  padding: 1rem 0;
+  width: 100%;
+}
+
+.pdf-icons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 200px;
+}
+
+.pdf-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: var(--muted);
+  border-radius: 6px;
+  cursor: grab;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.pdf-icon.selected {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pdf-icon:hover:not(.selected) {
+  background: #3f3f46;
+}
+
+.pdf-icon .icon {
+  font-size: 1.5rem;
+}
+
+.pdf-icon .name {
+  font-size: 0.9rem;
+}
+
+.drop-zone {
+  flex: 1;
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  min-height: 150px;
+}
+
+.drop-zone.active {
+  border-color: #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.selected-pdfs {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.selected-pdf {
+  background: var(--muted);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.remove-pdf {
+  background: transparent;
+  color: var(--foreground);
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 0 0.5rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.remove-pdf:hover {
+  opacity: 1;
+}
