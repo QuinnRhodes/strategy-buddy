@@ -19,10 +19,6 @@ const confirmExistingEmail = async (
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
-      options: {
-        // Use the rememberMe flag to control session persistence
-        persistSession: rememberMe
-      }
     });
     
     // If we get an "Email not confirmed" error
@@ -124,46 +120,127 @@ export function Auth() {
   };
 
   if (!user) {
+    const containerStyle = {
+      maxWidth: '400px',
+      margin: '2rem auto',
+      padding: '2rem',
+      background: '#f5f5f5',
+      borderRadius: '8px',
+      border: '1px solid #e4e4e7',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)',
+    };
+    
+    const titleStyle = {
+      marginBottom: '1.5rem',
+      textAlign: 'center' as const,
+      color: '#22c55e',
+      fontFamily: "'Marines', sans-serif",
+    };
+
+    const formContainerStyle = {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '1rem',
+    };
+
+    const inputGroupStyle = {
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: '0.5rem',
+    };
+
+    const inputStyle = {
+      padding: '10px 12px',
+      border: '1px solid #e4e4e7',
+      borderRadius: '4px',
+      fontSize: '0.95rem',
+    };
+
+    const rememberMeStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      margin: '0.5rem 0',
+    };
+
+    const labelStyle = {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      fontSize: '0.95rem',
+      color: '#525252',
+      cursor: 'pointer',
+    };
+
+    const checkboxStyle = {
+      width: '16px',
+      height: '16px',
+      cursor: 'pointer',
+      accentColor: '#22c55e',
+    };
+
+    const buttonStyle = {
+      padding: '10px',
+      background: '#22c55e',
+      color: 'white',
+      border: 'none',
+      borderRadius: '4px',
+      fontSize: '0.95rem',
+      fontWeight: '500',
+      cursor: 'pointer',
+    };
+
+    const errorStyle = {
+      background: '#fee2e2',
+      color: '#b91c1c',
+      padding: '0.75rem',
+      borderRadius: '4px',
+      marginBottom: '1rem',
+      fontSize: '0.9rem',
+    };
+    
     return (
-      <div className="auth-container">
-        <h2 className="auth-title">{authView === 'sign_in' ? 'Sign In' : 'Create Account'}</h2>
+      <div style={containerStyle} className="auth-container">
+        <h2 style={titleStyle} className="auth-title">{authView === 'sign_in' ? 'Sign In' : 'Create Account'}</h2>
         
         {/* Custom login form for sign-in to handle unconfirmed accounts */}
         {authView === 'sign_in' ? (
           <>
-            {errorMessage && <div className="error-message">{errorMessage}</div>}
-            <form onSubmit={handleSubmit} className="auth-form-container">
-              <div className="auth-input-group">
+            {errorMessage && <div style={errorStyle} className="error-message">{errorMessage}</div>}
+            <form onSubmit={handleSubmit} style={formContainerStyle} className="auth-form-container">
+              <div style={inputGroupStyle} className="auth-input-group">
                 <label htmlFor="email" className="auth-label">Email</label>
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  style={inputStyle}
                   className="auth-input"
                   disabled={isProcessing}
                 />
               </div>
               
-              <div className="auth-input-group">
+              <div style={inputGroupStyle} className="auth-input-group">
                 <label htmlFor="password" className="auth-label">Password</label>
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  style={inputStyle}
                   className="auth-input"
                   disabled={isProcessing}
                 />
               </div>
               
-              <div className="auth-remember-me">
-                <label className="remember-me-label">
+              <div style={rememberMeStyle} className="auth-remember-me">
+                <label style={labelStyle} className="remember-me-label">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
                     disabled={isProcessing}
+                    style={checkboxStyle}
                   />
                   <span>Remember me</span>
                 </label>
@@ -171,6 +248,7 @@ export function Auth() {
               
               <button 
                 type="submit" 
+                style={buttonStyle}
                 className="auth-button"
                 disabled={isProcessing}
               >
@@ -191,78 +269,35 @@ export function Auth() {
                 label: 'auth-label',
               }
             }}
-            providers={['google']}
-            redirectTo={window.location.origin.replace('3000', '5173')}
-            view={'sign_up'}
-            showLinks={false}
+            providers={['google', 'github']}
+            view={authView}
+            redirectTo={window.location.origin}
           />
         )}
-        
-        <div className="auth-options">
-          {authView === 'sign_in' ? (
-            <p>
-              Don't have an account?{' '}
-              <button 
-                onClick={() => setAuthView('sign_up')} 
-                className="text-button"
-              >
-                Create one
-              </button>
-            </p>
-          ) : (
-            <p>
-              Already have an account?{' '}
-              <button 
-                onClick={() => setAuthView('sign_in')} 
-                className="text-button"
-              >
-                Sign in
-              </button>
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  }
 
-  console.log('isTestAccount:', isTestAccount);
-  console.log('user:', user);
-  console.log('subscription:', subscription);
-
-  // Allow test accounts to bypass subscription requirement
-  if (isTestAccount) {
-    return (
-      <div className="app-container">
-        <h2>Welcome, Test Account!</h2>
-        <p>You have full access to Strategy Buddy as a test user.</p>
-        <button onClick={signOut} className="sign-out-button">
-          Sign Out
-        </button>
-      </div>
-    );
-  }
-
-  if (!subscription || subscription.status !== 'active') {
-    return (
-      <div className="subscription-container">
-        <h2>Subscribe to Continue</h2>
-        <p>Get unlimited access to Strategy Buddy</p>
-        
-        <div className="subscription-actions">
-          <button onClick={handleSubscribe} className="subscribe-button">
-            Subscribe Now
-          </button>
-          
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
           <button 
-            onClick={() => signOut()} 
-            className="back-button"
+            onClick={() => setAuthView(authView === 'sign_in' ? 'sign_up' : 'sign_in')}
+            style={{ ...buttonStyle, background: 'transparent', color: '#22c55e' }}
+            className="auth-toggle-button"
           >
-            Back to Sign In
+            {authView === 'sign_in' ? 'Create an account' : 'Sign in with an existing account'}
           </button>
         </div>
       </div>
     );
   }
 
-  return null;
+  return (
+    <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+      <h2>Welcome, {user.email}</h2>
+      <p>Your subscription status: {subscription ? 'Active' : 'Inactive'}</p>
+      <button onClick={handleSubscribe} style={buttonStyle} className="subscribe-button">
+        {subscription ? 'Manage Subscription' : 'Subscribe'}
+      </button>
+      <button onClick={signOut} style={{ ...buttonStyle, background: '#ef4444', marginTop: '1rem' }} className="sign-out-button">
+        Sign Out
+      </button>
+    </div>
+  );
 }

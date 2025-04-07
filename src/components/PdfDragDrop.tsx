@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { uploadPdf, deletePdf, UploadedPdf, getUploadedPdfs } from '../services/storage';
+import { uploadPdf, deletePdf } from '../services/storage';
 
 type Pdf = {
   id: string;
