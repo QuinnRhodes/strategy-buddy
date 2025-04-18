@@ -1,21 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
-console.log('Initializing Supabase client');
-
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-console.log('VITE_SUPABASE_URL:', import.meta.env.VITE_SUPABASE_URL ? 'defined' : 'undefined');
-console.log('VITE_SUPABASE_ANON_KEY:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'defined' : 'undefined');
-
 // Declare supabase client variable to be defined below
-let supabaseClient;
+let supabaseClient: any;
 
 try {
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Missing Supabase environment variables. Using mock client.');
-    // Instead of throwing an error, create a mock client that won't break the app
-    // and will allow our authentication bypass to work
+    console.error('Missing Supabase environment variables. Using mock values.');
   }
   
   // Create Supabase client even if environment variables are missing - our auth bypass doesn't need them
@@ -31,8 +24,6 @@ try {
       }
     }
   );
-
-  console.log('Supabase client initialized successfully');
 } catch (error) {
   console.error('Failed to initialize Supabase client:', error);
   // Create a mock client as fallback
@@ -56,7 +47,7 @@ try {
         remove: async () => ({})
       })
     }
-  } as any;
+  };
 }
 
 // Export the supabase client after it's properly initialized

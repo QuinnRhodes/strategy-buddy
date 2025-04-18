@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { User } from '@supabase/supabase-js';
+import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '../services/supabase';
 import type { Subscription } from '../services/supabase';
 
@@ -29,6 +29,8 @@ const MOCK_SUBSCRIPTION: Subscription = {
 // Environment flag to enable/disable auth bypass
 const BYPASS_AUTH = true;
 
+console.log('AuthContext file loaded, BYPASS_AUTH =', BYPASS_AUTH);
+
 type AuthContextType = {
   user: User | null;
   subscription: Subscription | null;
@@ -46,20 +48,27 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  console.log('AuthProvider initializing');
+  
   // When bypass is enabled, initialize with mock user and subscription
   const [user, setUser] = useState<User | null>(BYPASS_AUTH ? MOCK_USER : null);
   const [subscription, setSubscription] = useState<Subscription | null>(BYPASS_AUTH ? MOCK_SUBSCRIPTION : null);
   const [loading, setLoading] = useState(!BYPASS_AUTH);
   const [isTestAccount, setIsTestAccount] = useState(BYPASS_AUTH ? true : false);
 
+  console.log('Initial state:', { user: user?.id, loading, isTestAccount });
+
   useEffect(() => {
+    console.log('AuthProvider useEffect running');
+    
     // Skip auth check if bypass is enabled
     if (BYPASS_AUTH) {
+      console.log('Auth bypass enabled, skipping Supabase auth');
       return;
     }
 
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
       // Set user regardless of email verification status
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -71,7 +80,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     // Listen for auth changes
     const { data: { subscription: authSubscription } } = supabase.auth.onAuthStateChange(
-      async (_, session) => {
+      async (_event: string, session: Session | null) => {
         // Set user regardless of email verification status
         setUser(session?.user ?? null);
         if (session?.user) {
@@ -112,6 +121,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
     await supabase.auth.signOut();
   };
+  
+  console.log('AuthProvider returning context with:', { 
+    user: user?.id, 
+    subscription: subscription?.status, 
+    loading, 
+    isTestAccount 
+  });
 
   return (
     <AuthContext.Provider value={{ user, subscription, loading, signOut, isTestAccount }}>
@@ -121,6 +137,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 };
 
 export const useAuth = () => {
+  console.log('useAuth hook called');
   const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
