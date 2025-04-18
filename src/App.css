@@ -12,7 +12,7 @@
 }
 
 .app-container {
-  max-width: 1000px;
+  max-width: 2500px;
   margin: 0 auto;
   padding: 24px;
   min-height: 100vh;
@@ -68,6 +68,7 @@
   padding: 24px 0;
   margin: 1rem 0;
   scroll-behavior: smooth;
+  width: 100%;
 }
 
 .message {
@@ -78,7 +79,7 @@
 .message-bubble {
   padding: 16px;
   border-radius: 8px;
-  max-width: 85%;
+  max-width: 95%;
   word-wrap: break-word;
   animation: fadeIn 0.3s ease-in-out;
   line-height: 1.6;
@@ -207,6 +208,7 @@
 @media (max-width: 768px) {
   .app-container {
     padding: 16px;
+    max-width: 100%;
   }
   
   .message-bubble {
