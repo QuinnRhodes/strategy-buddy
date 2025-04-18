@@ -5,7 +5,11 @@ import { useAuth } from './context/AuthContext'
 import { PdfDragDrop } from './components/PdfDragDrop'
 import './components/PdfDragDrop.css'
 
-// Version 1.3.0 - Auth bypass added
+// Version 1.3.1 - Added debugging logs
+// Version 1.4.0 - Hide PDF drag and drop feature
+
+// Flag to hide the PDF drag and drop feature
+const HIDE_PDF_DRAG_DROP = true;
 
 type Message = {
   text: string;
@@ -13,8 +17,13 @@ type Message = {
 }
 
 function App() {
+  console.log('App component rendering');
+  
   // Only keep the variables we're actually using
   const { loading, signOut } = useAuth();
+  
+  console.log('Auth state:', { loading });
+  
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     { text: "Hi, I'm Strategy Buddy. How can I help you?", isUser: false }
@@ -28,6 +37,7 @@ function App() {
   };
 
   useEffect(() => {
+    console.log('Messages updated, scrolling to bottom');
     scrollToBottom();
   }, [messages]);
 
@@ -63,6 +73,7 @@ function App() {
   };
 
   if (loading) {
+    console.log('Rendering loading state');
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
@@ -71,6 +82,8 @@ function App() {
     );
   }
 
+  console.log('Rendering main app interface');
+  
   // Auth bypass - skip all authentication checks and go straight to the chat UI
   // Show chat interface for all cases
   return (
@@ -81,7 +94,8 @@ function App() {
           Sign Out
         </button>
       </div>
-      <PdfDragDrop onPdfSelection={handlePdfSelection} />
+      {/* PDF drag and drop component - conditionally rendered based on HIDE_PDF_DRAG_DROP flag */}
+      {!HIDE_PDF_DRAG_DROP && <PdfDragDrop onPdfSelection={handlePdfSelection} />}
       <div className="chat-container">
         {messages.map((message, index) => (
           <div
