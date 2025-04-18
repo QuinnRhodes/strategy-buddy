@@ -9,6 +9,7 @@ import './components/PdfDragDrop.css'
 // Version 1.3.1 - Added debugging logs
 // Version 1.4.0 - Hide PDF drag and drop feature
 // Version 1.5.0 - Enable PDF integration with Supabase
+// Version 1.5.1 - Fix PDF display and layout issues
 
 // Flag to enable the PDF feature
 const HIDE_PDF_DRAG_DROP = false;
@@ -22,6 +23,7 @@ type SelectedPdf = {
   id: string;
   path?: string;
   url?: string;
+  name?: string;
 } | null;
 
 function App() {
@@ -78,10 +80,18 @@ function App() {
     }
   };
 
-  const handlePdfSelection = (pdfIds: string[]) => {
+  const handlePdfSelection = (pdfIds: string[], pdfDetails?: SelectedPdf) => {
+    console.log('PDF selection changed:', pdfIds);
     setSelectedPdfIds(pdfIds);
+    
+    // If we have details for the selected PDF, set it as current and open viewer
+    if (pdfDetails && pdfIds.includes(pdfDetails.id)) {
+      console.log('Setting current PDF:', pdfDetails);
+      setCurrentPdf(pdfDetails);
+      setIsPdfViewerOpen(true);
+    }
     // Reset current PDF if none are selected
-    if (pdfIds.length === 0) {
+    else if (pdfIds.length === 0) {
       setCurrentPdf(null);
       setIsPdfViewerOpen(false);
     }
@@ -104,8 +114,6 @@ function App() {
 
   console.log('Rendering main app interface');
   
-  // Auth bypass - skip all authentication checks and go straight to the chat UI
-  // Show chat interface for all cases
   return (
     <div className="app-container">
       <div className="app-header">
@@ -126,7 +134,7 @@ function App() {
             {isPdfViewerOpen && currentPdf && (
               <div className="pdf-viewer-container">
                 <div className="pdf-viewer-header">
-                  <h3>PDF Viewer</h3>
+                  <h3>PDF Viewer{currentPdf.name ? `: ${currentPdf.name}` : ''}</h3>
                   <button 
                     onClick={handleClosePdfViewer}
                     className="close-pdf-button"

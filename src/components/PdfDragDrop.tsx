@@ -55,16 +55,35 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
   const [pdfs, setPdfs] = useState<Pdf[]>([]);
   const [dropZoneActive, setDropZoneActive] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch PDFs from Supabase on component mount
   useEffect(() => {
+    console.log('PdfDragDrop: Loading PDFs from Supabase');
+    
     async function loadPredefinedPdfs() {
       try {
+        console.log('Fetching PDFs from Supabase...');
         const pdfFiles = await getPredefinedPdfs();
+        console.log('Received PDF files:', pdfFiles);
+        
+        if (pdfFiles.length === 0) {
+          console.log('No PDFs found, using fallback data');
+          setPdfs([
+            { id: '1', name: 'Market Assessment', icon: '📊', selected: false },
+            { id: '2', name: 'Competitive Analysis', icon: '🔍', selected: false },
+            { id: '3', name: 'Strategic Framework', icon: '📝', selected: false },
+          ]);
+          setLoading(false);
+          return;
+        }
         
         // Convert Supabase files to our Pdf type
+        console.log('Converting Supabase files to PDF objects');
         const loadedPdfs: Pdf[] = await Promise.all(pdfFiles.map(async (file: SupabaseFile) => {
+          console.log('Processing file:', file.name);
           const url = await getPdfUrl(file.name);
+          console.log('Got URL for', file.name, ':', url);
           return {
             id: file.id,
             name: getDisplayName(file.name),
@@ -75,9 +94,11 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
           };
         }));
         
+        console.log('Processed PDFs:', loadedPdfs);
         setPdfs(loadedPdfs);
       } catch (error) {
         console.error('Error loading PDFs:', error);
+        setError('Failed to load PDF documents. Please try again later.');
         // Fallback to initial PDFs if we can't load from Supabase
         setPdfs([
           { id: '1', name: 'Market Assessment', icon: '📊', selected: false },
@@ -162,6 +183,14 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
 
   if (loading) {
     return <div className="pdf-container loading">Loading reference documents...</div>;
+  }
+
+  if (error) {
+    return <div className="pdf-container error">{error}</div>;
+  }
+
+  if (pdfs.length === 0) {
+    return <div className="pdf-container empty">No reference documents available</div>;
   }
 
   return (

@@ -1,10 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
+// Get Supabase URL and key from environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// Declare supabase client variable to be defined below
-let supabaseClient: any;
+console.log('Supabase URL:', supabaseUrl || 'not set');
+console.log('Supabase Anon Key:', supabaseAnonKey ? '[REDACTED]' : 'not set');
 
 // Type definition for Supabase storage file
 type SupabaseFile = {
@@ -19,15 +20,22 @@ type SupabaseFile = {
   size?: number;
 };
 
+// Hardcoded backup Supabase URL - use this if env vars aren't set
+const BACKUP_SUPABASE_URL = 'https://osjckwqhmylepezowcmr.supabase.co';
+const BACKUP_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9zamNrd3FobXlsZXBlem93Y21yIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODI2NTc5OTgsImV4cCI6MTk5ODIzMzk5OH0.sqwzMi3e3P-BUcpBMNugckJ9kBVjUegJ3R3A-9wksWc';
+
+// Declare supabase client variable to be defined below
+let supabaseClient: any;
+
 try {
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Missing Supabase environment variables. Using mock values.');
+    console.warn('Missing Supabase environment variables. Using backup values.');
   }
   
-  // Create Supabase client even if environment variables are missing - our auth bypass doesn't need them
+  // Create Supabase client with proper URL and key
   supabaseClient = createClient(
-    supabaseUrl || 'https://example.com', 
-    supabaseAnonKey || 'mock-key', 
+    supabaseUrl || BACKUP_SUPABASE_URL, 
+    supabaseAnonKey || BACKUP_SUPABASE_KEY, 
     {
       auth: {
         autoRefreshToken: true,
@@ -37,6 +45,8 @@ try {
       }
     }
   );
+  
+  console.log('Supabase client initialized successfully');
 } catch (error) {
   console.error('Failed to initialize Supabase client:', error);
   // Create a mock client as fallback
@@ -73,32 +83,51 @@ export const PDF_FOLDER = 'predefined';
 
 // Get all predefined PDFs from Supabase storage
 export async function getPredefinedPdfs(): Promise<SupabaseFile[]> {
-  const { data, error } = await supabase
-    .storage
-    .from(STORAGE_BUCKET)
-    .list(PDF_FOLDER);
+  console.log(`Fetching PDFs from bucket: ${STORAGE_BUCKET}, folder: ${PDF_FOLDER}`);
+  
+  try {
+    const { data, error } = await supabase
+      .storage
+      .from(STORAGE_BUCKET)
+      .list(PDF_FOLDER);
+      
+    if (error) {
+      console.error('Error fetching predefined PDFs:', error);
+      return [];
+    }
     
-  if (error) {
-    console.error('Error fetching predefined PDFs:', error);
+    console.log('Raw storage response:', data);
+    
+    // Filter for PDF files only
+    const pdfFiles = data?.filter((file: SupabaseFile) => 
+      file.name.toLowerCase().endsWith('.pdf')
+    ) || [];
+    
+    console.log('Filtered PDF files:', pdfFiles);
+    return pdfFiles;
+  } catch (e) {
+    console.error('Exception fetching PDFs:', e);
     return [];
   }
-  
-  // Filter for PDF files only
-  return data?.filter((file: SupabaseFile) => 
-    file.name.toLowerCase().endsWith('.pdf')
-  ) || [];
 }
 
 // Get public URL for a PDF
 export async function getPdfUrl(path: string) {
   const fullPath = path.startsWith(PDF_FOLDER) ? path : `${PDF_FOLDER}/${path}`;
+  console.log(`Getting public URL for: ${fullPath}`);
   
-  const { data } = await supabase
-    .storage
-    .from(STORAGE_BUCKET)
-    .getPublicUrl(fullPath);
-    
-  return data?.publicUrl || '';
+  try {
+    const { data } = await supabase
+      .storage
+      .from(STORAGE_BUCKET)
+      .getPublicUrl(fullPath);
+      
+    console.log('Public URL data:', data);
+    return data?.publicUrl || '';
+  } catch (e) {
+    console.error('Error getting public URL:', e);
+    return '';
+  }
 }
 
 export type Subscription = {
