@@ -44,7 +44,8 @@ try {
       from: () => ({
         upload: async () => ({}),
         getPublicUrl: () => ({ data: { publicUrl: '' } }),
-        remove: async () => ({})
+        remove: async () => ({}),
+        list: async () => ({ data: [], error: null })
       })
     }
   };
@@ -52,6 +53,40 @@ try {
 
 // Export the supabase client after it's properly initialized
 export const supabase = supabaseClient;
+
+// Constants for PDF storage
+export const STORAGE_BUCKET = 'strategy-buddy';
+export const PDF_FOLDER = 'predefined';
+
+// Get all predefined PDFs from Supabase storage
+export async function getPredefinedPdfs() {
+  const { data, error } = await supabase
+    .storage
+    .from(STORAGE_BUCKET)
+    .list(PDF_FOLDER);
+    
+  if (error) {
+    console.error('Error fetching predefined PDFs:', error);
+    return [];
+  }
+  
+  // Filter for PDF files only
+  return data?.filter(file => 
+    file.name.toLowerCase().endsWith('.pdf')
+  ) || [];
+}
+
+// Get public URL for a PDF
+export async function getPdfUrl(path: string) {
+  const fullPath = path.startsWith(PDF_FOLDER) ? path : `${PDF_FOLDER}/${path}`;
+  
+  const { data } = await supabase
+    .storage
+    .from(STORAGE_BUCKET)
+    .getPublicUrl(fullPath);
+    
+  return data?.publicUrl || '';
+}
 
 export type Subscription = {
   id: string;

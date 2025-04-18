@@ -1,26 +1,83 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getPredefinedPdfs, getPdfUrl, PDF_FOLDER } from '../services/supabase';
+import './PdfDragDrop.css';
 
 type Pdf = {
   id: string;
   name: string;
   icon: string;
   selected: boolean;
+  path?: string;
+  url?: string;
 };
 
-// Initial predefined PDFs
-const initialPdfs: Pdf[] = [
-  { id: '1', name: 'Market Analysis Report', icon: '📊', selected: false },
-  { id: '2', name: 'Competitive Landscape Guide', icon: '🔍', selected: false },
-  { id: '3', name: 'Strategic Planning Template', icon: '📝', selected: false },
-];
+// Mapping for PDF file names to icons
+const pdfIconMap: Record<string, string> = {
+  'competitive-analysis.pdf': '🔍',
+  'market-assessment.pdf': '📊',
+  'strategic-framework.pdf': '📝',
+  // Add fallbacks for case variations
+  'competitive-analysis.PDF': '🔍',
+  'market-assessment.PDF': '📊',
+  'strategic-framework.PDF': '📝',
+};
+
+// Helper to get a friendly display name from a filename
+function getDisplayName(fileName: string): string {
+  // Remove file extension
+  const baseName = fileName.replace(/\.pdf$/i, '');
+  
+  // Split by hyphen or underscore and capitalize each word
+  return baseName
+    .split(/[-_]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
 
 interface PdfDragDropProps {
   onPdfSelection: (selectedPdfIds: string[]) => void;
 }
 
 export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
-  const [pdfs, setPdfs] = useState<Pdf[]>(initialPdfs);
+  const [pdfs, setPdfs] = useState<Pdf[]>([]);
   const [dropZoneActive, setDropZoneActive] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch PDFs from Supabase on component mount
+  useEffect(() => {
+    async function loadPredefinedPdfs() {
+      try {
+        const pdfFiles = await getPredefinedPdfs();
+        
+        // Convert Supabase files to our Pdf type
+        const loadedPdfs: Pdf[] = await Promise.all(pdfFiles.map(async (file) => {
+          const url = await getPdfUrl(file.name);
+          return {
+            id: file.id,
+            name: getDisplayName(file.name),
+            icon: pdfIconMap[file.name.toLowerCase()] || '📄',
+            selected: false,
+            path: `${PDF_FOLDER}/${file.name}`,
+            url
+          };
+        }));
+        
+        setPdfs(loadedPdfs);
+      } catch (error) {
+        console.error('Error loading PDFs:', error);
+        // Fallback to initial PDFs if we can't load from Supabase
+        setPdfs([
+          { id: '1', name: 'Market Assessment', icon: '📊', selected: false },
+          { id: '2', name: 'Competitive Analysis', icon: '🔍', selected: false },
+          { id: '3', name: 'Strategic Framework', icon: '📝', selected: false },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    loadPredefinedPdfs();
+  }, []);
 
   // Handle drag start event
   const handleDragStart = (e: React.DragEvent, pdf: Pdf) => {
@@ -83,6 +140,17 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
     onPdfSelection(newSelectedIds);
   };
 
+  // Handle clicking on a PDF to select it
+  const handlePdfClick = (pdf: Pdf) => {
+    if (!pdf.selected) {
+      selectPdf(pdf.id);
+    }
+  };
+
+  if (loading) {
+    return <div className="pdf-container loading">Loading reference documents...</div>;
+  }
+
   return (
     <div className="pdf-container">
       <div className="pdf-sidebar">
@@ -94,6 +162,7 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
               className={`pdf-icon ${pdf.selected ? 'selected' : ''}`}
               draggable={!pdf.selected}
               onDragStart={(e) => handleDragStart(e, pdf)}
+              onClick={() => handlePdfClick(pdf)}
             >
               <span className="icon">{pdf.icon}</span>
               <span className="name">{pdf.name}</span>

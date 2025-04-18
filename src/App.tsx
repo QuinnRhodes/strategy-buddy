@@ -3,18 +3,26 @@ import './App.css'
 import { sendMessage } from './services/openai'
 import { useAuth } from './context/AuthContext'
 import { PdfDragDrop } from './components/PdfDragDrop'
+import { PdfViewer } from './components/PdfViewer'
 import './components/PdfDragDrop.css'
 
 // Version 1.3.1 - Added debugging logs
 // Version 1.4.0 - Hide PDF drag and drop feature
+// Version 1.5.0 - Enable PDF integration with Supabase
 
-// Flag to hide the PDF drag and drop feature
-const HIDE_PDF_DRAG_DROP = true;
+// Flag to enable the PDF feature
+const HIDE_PDF_DRAG_DROP = false;
 
 type Message = {
   text: string;
   isUser: boolean;
 }
+
+type SelectedPdf = {
+  id: string;
+  path?: string;
+  url?: string;
+} | null;
 
 function App() {
   console.log('App component rendering');
@@ -30,6 +38,8 @@ function App() {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPdfIds, setSelectedPdfIds] = useState<string[]>([]);
+  const [currentPdf, setCurrentPdf] = useState<SelectedPdf>(null);
+  const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -70,6 +80,22 @@ function App() {
 
   const handlePdfSelection = (pdfIds: string[]) => {
     setSelectedPdfIds(pdfIds);
+    // Reset current PDF if none are selected
+    if (pdfIds.length === 0) {
+      setCurrentPdf(null);
+      setIsPdfViewerOpen(false);
+    }
+  };
+
+  // This function will be called when a PDF is selected for viewing
+  const handleViewPdf = (pdf: SelectedPdf) => {
+    setCurrentPdf(pdf);
+    setIsPdfViewerOpen(true);
+  };
+
+  // Close the PDF viewer
+  const handleClosePdfViewer = () => {
+    setIsPdfViewerOpen(false);
   };
 
   if (loading) {
@@ -94,37 +120,66 @@ function App() {
           Sign Out
         </button>
       </div>
-      {/* PDF drag and drop component - conditionally rendered based on HIDE_PDF_DRAG_DROP flag */}
-      {!HIDE_PDF_DRAG_DROP && <PdfDragDrop onPdfSelection={handlePdfSelection} />}
-      <div className="chat-container">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
-          >
-            <div className="message-bubble">{message.text}</div>
-          </div>
-        ))}
-        {isLoading && (
-          <div className="loading">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="animate-spin"
-            >
-              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
-            </svg>
-            <span>Thinking...</span>
+
+      {/* Main content area with PDF feature and chat */}
+      <div className="main-content">
+        {/* PDF components - conditionally rendered based on HIDE_PDF_DRAG_DROP flag */}
+        {!HIDE_PDF_DRAG_DROP && (
+          <div className="pdf-section">
+            <PdfDragDrop 
+              onPdfSelection={handlePdfSelection} 
+            />
+            {isPdfViewerOpen && currentPdf && (
+              <div className="pdf-viewer-container">
+                <div className="pdf-viewer-header">
+                  <h3>PDF Viewer</h3>
+                  <button 
+                    onClick={handleClosePdfViewer}
+                    className="close-pdf-button"
+                  >
+                    Close
+                  </button>
+                </div>
+                <PdfViewer
+                  pdfId={currentPdf.id}
+                  pdfPath={currentPdf.path}
+                  pdfUrl={currentPdf.url}
+                />
+              </div>
+            )}
           </div>
         )}
-        <div ref={messagesEndRef} />
+
+        <div className="chat-container">
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
+            >
+              <div className="message-bubble">{message.text}</div>
+            </div>
+          ))}
+          {isLoading && (
+            <div className="loading">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="animate-spin"
+              >
+                <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+              </svg>
+              <span>Thinking...</span>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
       
       <form onSubmit={handleSubmit} className="input-form">
