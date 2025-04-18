@@ -6,6 +6,19 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 // Declare supabase client variable to be defined below
 let supabaseClient: any;
 
+// Type definition for Supabase storage file
+type SupabaseFile = {
+  id: string;
+  name: string;
+  bucket_id?: string;
+  owner?: string;
+  created_at?: string;
+  updated_at?: string;
+  last_accessed_at?: string;
+  metadata?: Record<string, any>;
+  size?: number;
+};
+
 try {
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error('Missing Supabase environment variables. Using mock values.');
@@ -59,7 +72,7 @@ export const STORAGE_BUCKET = 'strategy-buddy';
 export const PDF_FOLDER = 'predefined';
 
 // Get all predefined PDFs from Supabase storage
-export async function getPredefinedPdfs() {
+export async function getPredefinedPdfs(): Promise<SupabaseFile[]> {
   const { data, error } = await supabase
     .storage
     .from(STORAGE_BUCKET)
@@ -71,7 +84,7 @@ export async function getPredefinedPdfs() {
   }
   
   // Filter for PDF files only
-  return data?.filter(file => 
+  return data?.filter((file: SupabaseFile) => 
     file.name.toLowerCase().endsWith('.pdf')
   ) || [];
 }

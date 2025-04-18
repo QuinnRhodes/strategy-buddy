@@ -87,12 +87,6 @@ function App() {
     }
   };
 
-  // This function will be called when a PDF is selected for viewing
-  const handleViewPdf = (pdf: SelectedPdf) => {
-    setCurrentPdf(pdf);
-    setIsPdfViewerOpen(true);
-  };
-
   // Close the PDF viewer
   const handleClosePdfViewer = () => {
     setIsPdfViewerOpen(false);

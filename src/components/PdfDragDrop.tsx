@@ -11,6 +11,19 @@ type Pdf = {
   url?: string;
 };
 
+// Type for Supabase storage file object
+type SupabaseFile = {
+  id: string;
+  name: string;
+  bucket_id?: string;
+  owner?: string;
+  created_at?: string;
+  updated_at?: string;
+  last_accessed_at?: string;
+  metadata?: Record<string, any>;
+  size?: number;
+};
+
 // Mapping for PDF file names to icons
 const pdfIconMap: Record<string, string> = {
   'competitive-analysis.pdf': '🔍',
@@ -50,7 +63,7 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
         const pdfFiles = await getPredefinedPdfs();
         
         // Convert Supabase files to our Pdf type
-        const loadedPdfs: Pdf[] = await Promise.all(pdfFiles.map(async (file) => {
+        const loadedPdfs: Pdf[] = await Promise.all(pdfFiles.map(async (file: SupabaseFile) => {
           const url = await getPdfUrl(file.name);
           return {
             id: file.id,
