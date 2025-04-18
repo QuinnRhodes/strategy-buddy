@@ -1,12 +1,10 @@
-import { useState, useRef } from 'react';
-import { uploadPdf, deletePdf } from '../services/storage';
+import { useState } from 'react';
 
 type Pdf = {
   id: string;
   name: string;
   icon: string;
   selected: boolean;
-  isCustom?: boolean;
 };
 
 // Initial predefined PDFs
@@ -23,8 +21,6 @@ interface PdfDragDropProps {
 export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
   const [pdfs, setPdfs] = useState<Pdf[]>(initialPdfs);
   const [dropZoneActive, setDropZoneActive] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedPdfIds, setSelectedPdfIds] = useState<string[]>([]);
 
   // Handle drag start event
@@ -48,13 +44,7 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
     e.preventDefault();
     setDropZoneActive(false);
     
-    // Check if files are being dropped
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleFileUpload(e.dataTransfer.files);
-      return;
-    }
-    
-    // Otherwise, handle internal drag of PDF icon
+    // Handle internal drag of PDF icon
     const pdfId = e.dataTransfer.getData('pdfId');
     if (pdfId) {
       selectPdf(pdfId);
@@ -79,19 +69,11 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
   };
 
   // Handle removing a selected PDF
-  const handleRemovePdf = async (id: string) => {
-    // Find the PDF
-    const pdf = pdfs.find(p => p.id === id);
-    
-    // If it's a custom PDF, delete from storage
-    if (pdf?.isCustom) {
-      await deletePdf(id);
-    }
-    
+  const handleRemovePdf = (id: string) => {
     // Update state
     const updatedPdfs = pdfs.map(pdf => 
       pdf.id === id ? { ...pdf, selected: false } : pdf
-    ).filter(pdf => !(pdf.id === id && pdf.isCustom)); // Remove custom PDFs completely
+    );
     
     setPdfs(updatedPdfs);
     
@@ -102,63 +84,6 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
     
     setSelectedPdfIds(newSelectedIds);
     onPdfSelection(newSelectedIds);
-  };
-
-  // Handle file input change
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleFileUpload(e.target.files);
-    }
-  };
-
-  // Handle file upload
-  const handleFileUpload = async (files: FileList) => {
-    try {
-      setUploading(true);
-      
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        
-        // Check if file is a PDF
-        if (file.type !== 'application/pdf') {
-          alert(`File ${file.name} is not a PDF`);
-          continue;
-        }
-        
-        // Upload the PDF
-        const uploadedPdf = await uploadPdf(file);
-        
-        // Add to the PDF list
-        setPdfs(prev => [
-          ...prev,
-          {
-            id: uploadedPdf.id,
-            name: uploadedPdf.name,
-            icon: '📝',
-            selected: true,
-            isCustom: true,
-          }
-        ]);
-        
-        // Update selected PDFs
-        const newSelectedIds = [...selectedPdfIds, uploadedPdf.id];
-        onPdfSelection(newSelectedIds);
-      }
-    } catch (error: any) {
-      console.error('Upload error:', error);
-      alert(`Failed to upload PDF: ${error.message}`);
-    } finally {
-      setUploading(false);
-      // Reset the file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
-    }
-  };
-
-  // Open file dialog
-  const handleUploadClick = () => {
-    fileInputRef.current?.click();
   };
 
   return (
@@ -178,21 +103,6 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
             </div>
           ))}
         </div>
-        <button 
-          className="upload-button"
-          onClick={handleUploadClick} 
-          disabled={uploading}
-        >
-          {uploading ? 'Uploading...' : 'Upload PDF'}
-        </button>
-        <input 
-          type="file" 
-          ref={fileInputRef}
-          accept=".pdf"
-          multiple
-          style={{ display: 'none' }} 
-          onChange={handleFileInputChange}
-        />
       </div>
       <div
         className={`drop-zone ${dropZoneActive ? 'active' : ''}`}
@@ -221,8 +131,7 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
         ) : (
           <>
             <div className="drop-icon">📄</div>
-            <p>Drag PDFs here to include in the conversation</p>
-            <p className="drop-subtitle">or drop files to upload</p>
+            <p>Drag reference documents here to include in the conversation</p>
           </>
         )}
       </div>

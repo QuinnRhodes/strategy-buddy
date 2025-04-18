@@ -6,6 +6,29 @@ import type { Subscription } from '../services/supabase';
 // Add test emails that don't need subscription
 const TEST_EMAILS = ['test@strategybuddy.com', 'test1@strategybuddy.com', 'quinnnumber7@gmail.com', 'test2@strategybuddy.com', 'qrhodes7@outlook.com'];
 
+// Create a mock user for bypassing authentication
+const MOCK_USER: User = {
+  id: 'bypass-auth-user',
+  app_metadata: {},
+  user_metadata: {},
+  aud: 'authenticated',
+  created_at: new Date().toISOString(),
+  email: 'bypass@strategybuddy.com',
+  role: '',
+};
+
+// Create a mock subscription for bypassing subscription checks
+const MOCK_SUBSCRIPTION: Subscription = {
+  id: 'bypass-subscription',
+  user_id: 'bypass-auth-user',
+  status: 'active',
+  price_id: 'mock-price',
+  expires_at: new Date(2099, 11, 31).toISOString(), // Far in the future
+};
+
+// Environment flag to enable/disable auth bypass
+const BYPASS_AUTH = true;
+
 type AuthContextType = {
   user: User | null;
   subscription: Subscription | null;
@@ -23,12 +46,18 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [isTestAccount, setIsTestAccount] = useState(false);
+  // When bypass is enabled, initialize with mock user and subscription
+  const [user, setUser] = useState<User | null>(BYPASS_AUTH ? MOCK_USER : null);
+  const [subscription, setSubscription] = useState<Subscription | null>(BYPASS_AUTH ? MOCK_SUBSCRIPTION : null);
+  const [loading, setLoading] = useState(!BYPASS_AUTH);
+  const [isTestAccount, setIsTestAccount] = useState(BYPASS_AUTH ? true : false);
 
   useEffect(() => {
+    // Skip auth check if bypass is enabled
+    if (BYPASS_AUTH) {
+      return;
+    }
+
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       // Set user regardless of email verification status
@@ -77,6 +106,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = async () => {
+    if (BYPASS_AUTH) {
+      console.log('Auth bypass is enabled - sign out is deactivated');
+      return;
+    }
     await supabase.auth.signOut();
   };
 

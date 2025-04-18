@@ -1,12 +1,11 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
 import { sendMessage } from './services/openai'
-import { Auth } from './components/Auth'
 import { useAuth } from './context/AuthContext'
 import { PdfDragDrop } from './components/PdfDragDrop'
 import './components/PdfDragDrop.css'
 
-// Version 1.2.0 - Fixed TypeScript errors
+// Version 1.3.0 - Auth bypass added
 
 type Message = {
   text: string;
@@ -71,28 +70,8 @@ function App() {
     );
   }
 
-  // First check if user is not logged in
-  if (!user) {
-    return (
-      <div className="app-container">
-        <h1 className="app-title">Strategy Buddy</h1>
-        <p className="app-description">Your AI strategy assistant</p>
-        <Auth />
-      </div>
-    );
-  }
-
-  // Then check subscription status for logged-in users
-  if (!isTestAccount && (!subscription?.status || subscription.status !== 'active')) {
-    return (
-      <div className="app-container">
-        <h1 className="app-title">Strategy Buddy</h1>
-        <Auth />
-      </div>
-    );
-  }
-
-  // Show chat interface for authenticated and subscribed users
+  // Auth bypass - skip all authentication checks and go straight to the chat UI
+  // Show chat interface for all cases
   return (
     <div className="app-container">
       <div className="app-header">
