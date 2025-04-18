@@ -21,7 +21,6 @@ interface PdfDragDropProps {
 export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
   const [pdfs, setPdfs] = useState<Pdf[]>(initialPdfs);
   const [dropZoneActive, setDropZoneActive] = useState(false);
-  const [selectedPdfIds, setSelectedPdfIds] = useState<string[]>([]);
 
   // Handle drag start event
   const handleDragStart = (e: React.DragEvent, pdf: Pdf) => {
@@ -64,7 +63,6 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
       .filter(pdf => pdf.selected)
       .map(pdf => pdf.id);
     
-    setSelectedPdfIds(newSelectedIds);
     onPdfSelection(newSelectedIds);
   };
 
@@ -82,7 +80,6 @@ export function PdfDragDrop({ onPdfSelection }: PdfDragDropProps) {
       .filter(pdf => pdf.selected)
       .map(pdf => pdf.id);
     
-    setSelectedPdfIds(newSelectedIds);
     onPdfSelection(newSelectedIds);
   };
 

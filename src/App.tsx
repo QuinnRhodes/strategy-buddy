@@ -13,7 +13,8 @@ type Message = {
 }
 
 function App() {
-  const { user, subscription, loading, isTestAccount, signOut } = useAuth();
+  // Only keep the variables we're actually using
+  const { loading, signOut } = useAuth();
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     { text: "Hi, I'm Strategy Buddy. How can I help you?", isUser: false }
