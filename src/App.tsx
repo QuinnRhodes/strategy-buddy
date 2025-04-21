@@ -75,6 +75,8 @@ function App({ version }: AppProps) {
   useEffect(() => {
     if (version === 'strategy1') {
       setAppTitle('Strategy Test 1');
+      // Add strategy1-page class for specific background
+      document.body.classList.add('strategy1-page');
       // Remove any other page-specific classes
       document.body.classList.remove('strategy2-page');
       setMessages([{ text: "Hi, I'm Strategy Test 1. How can I help with your business planning?", isUser: false }]);
@@ -82,17 +84,21 @@ function App({ version }: AppProps) {
       setAppTitle('Strategy Test 2');
       // Add strategy2-page class to body for specific background
       document.body.classList.add('strategy2-page');
+      // Remove strategy1-page class
+      document.body.classList.remove('strategy1-page');
       setMessages([{ text: "Hi, I'm Strategy Test 2. I can help with advanced market analysis.", isUser: false }]);
     } else {
       setAppTitle('Differentiator');
       // Remove any other page-specific classes
       document.body.classList.remove('strategy2-page');
+      document.body.classList.remove('strategy1-page');
       setMessages([{ text: "Hi, I'm the Differentiator. How can I help you stand out from competitors?", isUser: false }]);
     }
     
     // Clean up function to remove page-specific classes when unmounting
     return () => {
       document.body.classList.remove('strategy2-page');
+      document.body.classList.remove('strategy1-page');
     };
   }, [version]);
 

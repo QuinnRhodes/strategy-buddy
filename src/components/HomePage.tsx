@@ -30,7 +30,7 @@ export function HomePage() {
 
       <div className="assistants-grid">
         <div 
-          className="assistant-card" 
+          className="assistant-card strategy1-card" 
           onClick={() => handleSelectAssistant('/strategy1')}
         >
           <div className="assistant-icon">🧠</div>

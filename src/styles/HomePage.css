@@ -164,6 +164,39 @@ body, #root {
   font-weight: 500;
 }
 
+/* Strategy Test 1 card with background3.gif */
+.strategy1-card {
+  background: url('/background3.gif') no-repeat center center;
+  background-size: cover;
+  position: relative;
+}
+
+.strategy1-card:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+}
+
+.strategy1-card * {
+  position: relative;
+  z-index: 1;
+}
+
+.strategy1-card .assistant-name {
+  color: #111827;
+  font-weight: 700;
+}
+
+.strategy1-card .assistant-description {
+  color: #111827;
+  font-weight: 500;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .assistants-grid {
