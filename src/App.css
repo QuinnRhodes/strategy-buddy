@@ -47,71 +47,20 @@ body, #root {
   flex-direction: column;
   background: transparent; /* Make the app container background transparent */
   color: var(--foreground);
+  /* Create proper spacing to avoid scrolling */
+  justify-content: space-between;
 }
 
 .app-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  padding: 16px;
+  margin-bottom: 0; /* Reduced to keep header close to chat box */
   border-bottom: 1px solid var(--border);
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(4px);
   border-radius: 8px;
-  padding: 16px;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.back-button {
-  background: transparent;
-  color: #71717a;
-  border: 1px solid var(--border);
-  padding: 0.5rem 0.7rem;
-  font-size: 0.875rem;
-  transition: all 0.2s;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.back-button:hover {
-  background: var(--muted);
-  color: var(--foreground);
-}
-
-.app-title {
-  font-family: 'Marines', sans-serif;
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 0;
-  color: var(--primary);
-  letter-spacing: 1.2px;
-  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-}
-
-.app-description {
-  color: #71717a;
-  margin: 0.5rem 0 1.5rem;
-}
-
-.sign-out-button {
-  background: transparent;
-  color: #71717a;
-  border: 1px solid var(--border);
-  padding: 0.5rem 1rem;
-  font-size: 0.875rem;
-  transition: all 0.2s;
-  border-radius: 4px;
-}
-
-.sign-out-button:hover {
-  background: var(--muted);
-  color: var(--foreground);
 }
 
 /* Main content layout with PDF sidebar */
@@ -119,10 +68,10 @@ body, #root {
   display: flex;
   gap: 20px;
   flex: 1;
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to prevent scroll issues */
   height: auto;
-  min-height: calc(100vh - 200px);
-  padding: 40px 0; /* Add vertical padding to create more buffer space */
+  min-height: auto; /* Remove fixed height to prevent scrolling */
+  padding: 20px 0; /* Reduced padding to prevent scrolling */
 }
 
 /* PDF section styles */
@@ -216,8 +165,8 @@ body, #root {
   flex: 1;
   overflow-y: auto;
   padding: 24px 5%;
-  margin: 30px 0; /* Increased vertical margin for better buffer space */
-  max-height: calc(100vh - 350px); /* Reduced max height for more buffer */
+  margin: 16px 0; /* Reduced margin to keep everything visible without scrolling */
+  max-height: calc(100vh - 280px); /* Adjusted to prevent scrolling on load */
   scroll-behavior: smooth;
   box-sizing: border-box;
   background: rgba(255, 255, 255, 0.8); /* 80% opaque, 20% transparent */
@@ -312,8 +261,8 @@ body, #root {
   display: flex;
   gap: 12px;
   padding: 16px;
-  margin-top: 30px; /* Add top margin for more space after chat container */
-  background: rgba(255, 255, 255, 0.8); /* Exactly 20% transparent to match chat container */
+  margin-top: 16px; /* Reduced to keep everything visible without scrolling */
+  background: rgba(255, 255, 255, 0.8); /* 80% opaque, 20% transparent */
   box-shadow: 0 4px 24px rgba(0,0,0,0.12);
   backdrop-filter: blur(6px);
   border-radius: 8px;
