@@ -12,8 +12,8 @@
 }
 
 /* Keep the default GIF background for the chat/Differentiator page */
-body:not(.home-page):not(.strategy2-page):not(.strategy1-page), 
-body:not(.home-page):not(.strategy2-page):not(.strategy1-page) #root {
+body:not(.home-page):not(.strategy2-page), 
+body:not(.home-page):not(.strategy2-page) #root {
   min-height: 100vh;
   margin: 0;
   padding: 0;
@@ -28,16 +28,6 @@ body.strategy2-page #root {
   margin: 0;
   padding: 0;
   background: url('/background2.gif') no-repeat center center fixed;
-  background-size: cover;
-}
-
-/* Background for Strategy Test 1 */
-body.strategy1-page,
-body.strategy1-page #root {
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-  background: url('/background3.gif') no-repeat center center fixed;
   background-size: cover;
 }
 
@@ -225,10 +215,11 @@ body, #root {
   flex: 1;
   overflow-y: auto;
   padding: 24px 5%;
-  margin: 0;
+  margin: 20px 0; /* Add margin for vertical buffer */
+  max-height: calc(100vh - 300px); /* Limit max height to create buffer space */
   scroll-behavior: smooth;
   box-sizing: border-box;
-  background: rgba(255, 255, 255, 0.7); /* 70% opaque, 30% transparent */
+  background: rgba(255, 255, 255, 0.8); /* 80% opaque, 20% transparent */
   backdrop-filter: blur(2px);
   border-radius: 12px;
   box-shadow: 0 4px 24px rgba(0,0,0,0.10);
