@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import './App.css'
@@ -30,14 +31,19 @@ type SelectedPdf = {
   name?: string;
 } | null;
 
-function App() {
-  console.log('App component rendering');
-  
-  // Only keep the variables we're actually using
+// Define the props type for App
+interface AppProps {
+  version?: 'strategy1' | 'strategy2';
+}
+
+function App({ version }: AppProps) {
+  console.log('App component rendering with version:', version);
+
+  const navigate = useNavigate();
   const { loading, signOut } = useAuth();
-  
+
   console.log('Auth state:', { loading });
-  
+
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<Message[]>([
     { text: "Hi, I'm Strategy Buddy. How can I help you?", isUser: false }
@@ -46,6 +52,7 @@ function App() {
   const [selectedPdfIds, setSelectedPdfIds] = useState<string[]>([]);
   const [currentPdf, setCurrentPdf] = useState<SelectedPdf>(null);
   const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
+  const [appTitle, setAppTitle] = useState('Strategy Buddy');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -64,18 +71,29 @@ function App() {
     }
   }, [messages]);
 
+  useEffect(() => {
+    if (version === 'strategy1') {
+      setAppTitle('Strategy Test 1');
+      setMessages([{ text: "Hi, I'm Strategy Test 1. How can I help with your business planning?", isUser: false }]);
+    } else if (version === 'strategy2') {
+      setAppTitle('Strategy Test 2');
+      setMessages([{ text: "Hi, I'm Strategy Test 2. I can help with advanced market analysis.", isUser: false }]);
+    } else {
+      setAppTitle('Differentiator');
+      setMessages([{ text: "Hi, I'm the Differentiator. How can I help you stand out from competitors?", isUser: false }]);
+    }
+  }, [version]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!input.trim()) return;
 
-    // Add user message
     const userMessage: Message = { text: input, isUser: true };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
-      // Get AI response, passing selected PDFs
       const response = await sendMessage(input, selectedPdfIds);
       const aiMessage: Message = { text: response || 'No response', isUser: false };
       setMessages(prev => [...prev, aiMessage]);
@@ -94,23 +112,23 @@ function App() {
   const handlePdfSelection = (pdfIds: string[], pdfDetails?: SelectedPdf) => {
     console.log('PDF selection changed:', pdfIds);
     setSelectedPdfIds(pdfIds);
-    
-    // If we have details for the selected PDF, set it as current and open viewer
+
     if (pdfDetails && pdfIds.includes(pdfDetails.id)) {
       console.log('Setting current PDF:', pdfDetails);
       setCurrentPdf(pdfDetails);
       setIsPdfViewerOpen(true);
-    }
-    // Reset current PDF if none are selected
-    else if (pdfIds.length === 0) {
+    } else if (pdfIds.length === 0) {
       setCurrentPdf(null);
       setIsPdfViewerOpen(false);
     }
   };
 
-  // Close the PDF viewer
   const handleClosePdfViewer = () => {
     setIsPdfViewerOpen(false);
+  };
+
+  const handleBackToHome = () => {
+    navigate('/');
   };
 
   if (loading) {
@@ -124,19 +142,22 @@ function App() {
   }
 
   console.log('Rendering main app interface');
-  
+
   return (
     <div className="app-container">
       <div className="app-header">
-        <h1 className="app-title">Strategy Buddy</h1>
+        <div className="header-left">
+          <button onClick={handleBackToHome} className="back-button">
+            &larr; Back
+          </button>
+          <h1 className="app-title">{appTitle}</h1>
+        </div>
         <button onClick={signOut} className="sign-out-button">
           Sign Out
         </button>
       </div>
 
-      {/* Main content area with PDF feature and chat */}
       <div className="main-content">
-        {/* PDF components - conditionally rendered based on HIDE_PDF_DRAG_DROP flag */}
         {!HIDE_PDF_DRAG_DROP && (
           <div className="pdf-section">
             <PdfDragDrop 

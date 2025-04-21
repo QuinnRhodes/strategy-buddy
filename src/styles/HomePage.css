@@ -1,0 +1,132 @@
+body, #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: url('/background.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.home-title {
+  font-family: 'Marines', sans-serif;
+  font-size: 3rem;
+  font-weight: 600;
+  margin: 0;
+  color: #22c55e;
+  letter-spacing: 1.2px;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.home-subtitle {
+  font-size: 1.2rem;
+  color: #71717a;
+  margin-top: 16px;
+}
+
+.assistants-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.assistant-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  height: 100%;
+  min-height: 250px;
+  border: 1px solid #e5e7eb;
+}
+
+.assistant-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.assistant-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.assistant-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 15px 0;
+}
+
+.assistant-description {
+  font-size: 0.95rem;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+/* Differentiator card with background GIF */
+.differentiator-card {
+  background: url('/background.gif') no-repeat center center;
+  background-size: cover;
+  position: relative;
+}
+
+.differentiator-card:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+}
+
+.differentiator-card * {
+  position: relative;
+  z-index: 1;
+}
+
+.differentiator-card .assistant-name {
+  color: #111827;
+  font-weight: 700;
+}
+
+.differentiator-card .assistant-description {
+  color: #111827;
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .assistants-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .home-title {
+    font-size: 2.5rem;
+  }
+}

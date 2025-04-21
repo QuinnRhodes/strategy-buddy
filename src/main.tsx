@@ -1,17 +1,26 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import './assets/fonts/fonts.css'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import App from './App.tsx'
-import { AuthProvider } from './context/AuthContext'
-import { ErrorBoundary } from './components/ErrorBoundary'
+import { HomePage } from './components/HomePage.tsx'
+import './index.css'
+import { AuthProvider } from './context/AuthContext.tsx'
+import { ErrorBoundary } from './components/ErrorBoundary.tsx'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
     <ErrorBoundary>
       <AuthProvider>
-        <App />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/chat" element={<App />} />
+            <Route path="/strategy1" element={<App version="strategy1" />} />
+            <Route path="/strategy2" element={<App version="strategy2" />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
       </AuthProvider>
     </ErrorBoundary>
-  </StrictMode>,
+  </React.StrictMode>,
 )
