@@ -11,6 +11,14 @@
   --danger: #ef4444;
 }
 
+body, #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: url('/background.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
 .app-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -253,7 +261,9 @@
   display: flex;
   gap: 12px;
   padding: 16px;
-  background: var(--muted);
+  background: rgba(255, 255, 255, 0.7); /* semi-transparent white */
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  backdrop-filter: blur(6px);
   border-radius: 8px;
   border: 1px solid var(--border);
 }
