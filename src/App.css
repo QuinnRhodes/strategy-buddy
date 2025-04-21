@@ -176,13 +176,14 @@
 .message-bubble {
   padding: 20px;
   border-radius: 8px;
-  max-width: 80%;
+  max-width: 85%;
   word-wrap: break-word;
   animation: fadeIn 0.3s ease-in-out;
   line-height: 1.6;
   font-size: 0.95rem;
   border: 1px solid var(--border);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
 }
 
 @keyframes fadeIn {
@@ -211,6 +212,8 @@
 
 .ai-message .message-bubble {
   background: var(--bubble-ai);
+  position: relative;
+  padding-bottom: 1.5rem;
 }
 
 .loading {
@@ -501,4 +504,137 @@
   border-radius: 4px;
   margin-bottom: 1rem;
   font-size: 0.9rem;
+}
+
+/* Add Claude font - You'll need to import this font separately if you don't already have it */
+@font-face {
+  font-family: 'Claude';
+  src: url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600;700&display=swap');
+}
+
+/* Markdown content styling */
+.markdown-content {
+  font-family: 'Claude', 'Source Serif Pro', serif;
+  line-height: 1.6;
+}
+
+.markdown-content p {
+  margin-bottom: 1.2rem;
+}
+
+.markdown-content strong {
+  font-weight: 700;
+  color: #000;
+}
+
+.markdown-content em {
+  font-style: italic;
+}
+
+.markdown-content h1, 
+.markdown-content h2, 
+.markdown-content h3, 
+.markdown-content h4, 
+.markdown-content h5, 
+.markdown-content h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #111827;
+}
+
+.markdown-content h1 {
+  font-size: 1.75rem;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.5rem;
+}
+
+.markdown-content h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 0.3rem;
+}
+
+.markdown-content h3 {
+  font-size: 1.25rem;
+}
+
+.markdown-content h4 {
+  font-size: 1.15rem;
+}
+
+.markdown-content ul, 
+.markdown-content ol {
+  margin-bottom: 1.2rem;
+  padding-left: 1.5rem;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5rem;
+}
+
+.markdown-content hr {
+  height: 2px;
+  background-color: #e5e7eb;
+  border: none;
+  margin: 1.5rem 0;
+}
+
+/* Tables styling */
+.markdown-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+}
+
+.markdown-content table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+  text-align: left;
+}
+
+.markdown-content table td,
+.markdown-content table th {
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+}
+
+.markdown-content table tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* Code blocks */
+.markdown-content pre {
+  background: #f1f5f9;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 1.2rem 0;
+  font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+
+.markdown-content code {
+  font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+  font-size: 0.9em;
+  background: #f1f5f9;
+  padding: 0.15rem 0.3rem;
+  border-radius: 3px;
+}
+
+.markdown-content pre code {
+  background: transparent;
+  padding: 0;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+/* Blockquotes */
+.markdown-content blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  color: #4b5563;
+  font-style: italic;
+  margin: 1.2rem 0;
 }

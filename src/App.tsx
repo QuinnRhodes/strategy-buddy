@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import './App.css'
 import { sendMessage } from './services/openai'
 import { useAuth } from './context/AuthContext'
@@ -43,6 +45,7 @@ function App() {
   const [currentPdf, setCurrentPdf] = useState<SelectedPdf>(null);
   const [isPdfViewerOpen, setIsPdfViewerOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -51,6 +54,12 @@ function App() {
   useEffect(() => {
     console.log('Messages updated, scrolling to bottom');
     scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   }, [messages]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -158,7 +167,18 @@ function App() {
               key={index}
               className={`message ${message.isUser ? 'user-message' : 'ai-message'}`}
             >
-              <div className="message-bubble">{message.text}</div>
+              <div className="message-bubble">
+                {message.isUser ? (
+                  message.text
+                ) : (
+                  <ReactMarkdown 
+                    remarkPlugins={[remarkGfm]} 
+                    className="markdown-content"
+                  >
+                    {message.text}
+                  </ReactMarkdown>
+                )}
+              </div>
             </div>
           ))}
           {isLoading && (
@@ -186,6 +206,7 @@ function App() {
       
       <form onSubmit={handleSubmit} className="input-form">
         <input
+          ref={inputRef}
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}

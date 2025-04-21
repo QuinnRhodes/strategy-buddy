@@ -15,6 +15,36 @@ const pdfContents: Record<string, string> = {
   '3': 'Strategic Planning Template: Framework for developing comprehensive business strategies with sections on mission statement development, goal setting, action planning, resource allocation, and performance measurement. Includes examples of successful strategic initiatives.'
 };
 
+// Format the AI response with enhanced markdown
+function formatAIResponse(text: string): string {
+  // Add instructions to the AI to use proper markdown formatting
+  const formattingPrompt = `
+Please format your response with these guidelines:
+- Use **bold text** for important points and key concepts
+- Use proper markdown tables for structured data
+- Use horizontal rules (---) between major sections
+- Use headings (## and ###) to organize content
+- Format code blocks and examples properly with \`\`\`
+`;
+
+  // Enhance the raw response with better formatting
+  let enhancedText = text;
+  
+  // Ensure proper spacing around headings
+  enhancedText = enhancedText.replace(/\n(#{1,3} .*)\n/g, '\n\n$1\n\n');
+  
+  // Add horizontal lines before each major section if not already present
+  enhancedText = enhancedText.replace(/\n#{2} ([^\n]+)/g, '\n\n---\n\n## $1');
+  
+  // Ensure tables have proper spacing
+  enhancedText = enhancedText.replace(/\n(\|[^\n]+\|)\n([^|])/g, '\n$1\n\n$2');
+  
+  // Improve list formatting
+  enhancedText = enhancedText.replace(/\n- /g, '\n\n- ');
+  
+  return enhancedText;
+}
+
 export async function sendMessage(message: string, selectedPdfIds: string[] = []) {
   try {
     // Create a thread if we don't have one
@@ -23,8 +53,13 @@ export async function sendMessage(message: string, selectedPdfIds: string[] = []
       threadId = thread.id;
     }
 
-    // Build the message with selected PDF content
-    let enhancedMessage = message;
+    // Add formatting instructions to the prompt
+    let enhancedMessage = message + `\n\nPlease format your response with enhanced markdown:
+- Use **bold** for important points and key terms
+- Add clear section headings with ## or ###
+- Use horizontal rules (---) between major sections
+- Format tables properly for readability
+- Separate paragraphs with blank lines`;
     
     if (selectedPdfIds.length > 0) {
       enhancedMessage += '\n\nConsider these documents in your response:\n';
@@ -72,7 +107,8 @@ export async function sendMessage(message: string, selectedPdfIds: string[] = []
       );
 
       if (textContent?.type === 'text') {
-        return textContent.text.value;
+        // Format the response with enhanced markdown
+        return formatAIResponse(textContent.text.value);
       } else {
         return 'No text response available';
       }

@@ -20,6 +20,8 @@
     "pdfjs-dist": "^5.1.91",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "stripe": "^18.0.0",
     "supabase": "^2.20.5",
     "uuid": "^11.1.0"
