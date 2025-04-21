@@ -172,8 +172,11 @@ function App() {
                   message.text
                 ) : (
                   <ReactMarkdown 
-                    remarkPlugins={[remarkGfm]} 
-                    className="markdown-content"
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      // This wrapper div applies the markdown styling
+                      p: ({node, ...props}) => <p className="markdown-content" {...props} />
+                    }}
                   >
                     {message.text}
                   </ReactMarkdown>

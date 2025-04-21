@@ -17,16 +17,6 @@ const pdfContents: Record<string, string> = {
 
 // Format the AI response with enhanced markdown
 function formatAIResponse(text: string): string {
-  // Add instructions to the AI to use proper markdown formatting
-  const formattingPrompt = `
-Please format your response with these guidelines:
-- Use **bold text** for important points and key concepts
-- Use proper markdown tables for structured data
-- Use horizontal rules (---) between major sections
-- Use headings (## and ###) to organize content
-- Format code blocks and examples properly with \`\`\`
-`;
-
   // Enhance the raw response with better formatting
   let enhancedText = text;
   
