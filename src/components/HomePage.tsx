@@ -33,7 +33,6 @@ export function HomePage() {
           className="assistant-card strategy1-card" 
           onClick={() => handleSelectAssistant('/strategy1')}
         >
-          <div className="assistant-icon">🧠</div>
           <h2 className="assistant-name">Strategy Test 1</h2>
           <p className="assistant-description">
             General strategy assistant for business planning and analysis.
@@ -44,7 +43,6 @@ export function HomePage() {
           className="assistant-card strategy2-card" 
           onClick={() => handleSelectAssistant('/strategy2')}
         >
-          <div className="assistant-icon">📊</div>
           <h2 className="assistant-name">Strategy Test 2</h2>
           <p className="assistant-description">
             Advanced strategy assistant with market analysis capabilities.
@@ -55,7 +53,6 @@ export function HomePage() {
           className="assistant-card differentiator-card" 
           onClick={() => handleSelectAssistant('/chat')}
         >
-          <div className="assistant-icon">🚀</div>
           <h2 className="assistant-name">Differentiator</h2>
           <p className="assistant-description">
             Specialized assistant for competitive differentiation and positioning.
