@@ -6,7 +6,13 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true // Note: In production, you should use a backend server
 });
 
-let threadId: string | null = null;
+// Thread IDs for different assistants
+const threadIds: Record<string, string | null> = {
+  default: null,
+  marketResearch: null,
+  strategy1: null,
+  strategy2: null
+};
 
 // Mock PDF content for each PDF (used as fallback)
 const pdfContents: Record<string, string> = {
@@ -35,12 +41,18 @@ function formatAIResponse(text: string): string {
   return enhancedText;
 }
 
-export async function sendMessage(message: string, selectedPdfIds: string[] = []) {
+export async function sendMessage(message: string, selectedPdfIds: string[] = [], assistantType: 'default' | 'marketResearch' | 'strategy1' | 'strategy2' = 'default') {
   try {
-    // Create a thread if we don't have one
-    if (!threadId) {
+    // Create a thread if we don't have one for this assistant type
+    if (!threadIds[assistantType]) {
       const thread = await openai.beta.threads.create();
-      threadId = thread.id;
+      threadIds[assistantType] = thread.id;
+    }
+
+    const threadId = threadIds[assistantType];
+    
+    if (!threadId) {
+      throw new Error('Failed to create or retrieve thread ID');
     }
 
     // Add formatting instructions to the prompt
@@ -74,9 +86,25 @@ export async function sendMessage(message: string, selectedPdfIds: string[] = []
       content: enhancedMessage
     });
 
+    // Select the appropriate assistant ID based on the assistant type
+    let assistantId = '';
+    switch (assistantType) {
+      case 'marketResearch':
+        assistantId = import.meta.env.VITE_MARKET_RESEARCH_ASSISTANT_ID || import.meta.env.VITE_ASSISTANT_ID;
+        break;
+      case 'strategy1':
+        assistantId = import.meta.env.VITE_STRATEGY1_ASSISTANT_ID || import.meta.env.VITE_ASSISTANT_ID;
+        break;
+      case 'strategy2':
+        assistantId = import.meta.env.VITE_STRATEGY2_ASSISTANT_ID || import.meta.env.VITE_ASSISTANT_ID;
+        break;
+      default:
+        assistantId = import.meta.env.VITE_ASSISTANT_ID;
+    }
+
     // Run the assistant on the thread
     const run = await openai.beta.threads.runs.create(threadId, {
-      assistant_id: import.meta.env.VITE_ASSISTANT_ID
+      assistant_id: assistantId
     });
 
     // Poll for the response

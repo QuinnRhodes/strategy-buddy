@@ -58,6 +58,16 @@ export function HomePage() {
             Specialized assistant for competitive differentiation and positioning.
           </p>
         </div>
+
+        <div 
+          className="assistant-card market-research-card" 
+          onClick={() => handleSelectAssistant('/market-research')}
+        >
+          <h2 className="assistant-name">Market Research</h2>
+          <p className="assistant-description">
+            Research assistant for market trends, consumer insights, and opportunity analysis.
+          </p>
+        </div>
       </div>
     </div>
   );
