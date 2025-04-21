@@ -12,9 +12,11 @@ import './components/PdfDragDrop.css'
 // Version 1.4.0 - Hide PDF drag and drop feature
 // Version 1.5.0 - Enable PDF integration with Supabase
 // Version 1.5.1 - Fix PDF display and layout issues
+// Version 1.5.2 - Add markdown formatting for responses
+// Version 1.6.0 - Hide PDF elements (keeping code for future use)
 
-// Flag to enable the PDF feature
-const HIDE_PDF_DRAG_DROP = false;
+// Flag to enable/disable the PDF feature (set to true to hide)
+const HIDE_PDF_DRAG_DROP = true;
 
 type Message = {
   text: string;
@@ -171,15 +173,11 @@ function App() {
                 {message.isUser ? (
                   message.text
                 ) : (
-                  <ReactMarkdown 
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      // This wrapper div applies the markdown styling
-                      p: ({node, ...props}) => <p className="markdown-content" {...props} />
-                    }}
-                  >
-                    {message.text}
-                  </ReactMarkdown>
+                  <div className="markdown-content">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {message.text}
+                    </ReactMarkdown>
+                  </div>
                 )}
               </div>
             </div>
