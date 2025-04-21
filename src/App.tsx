@@ -71,17 +71,29 @@ function App({ version }: AppProps) {
     }
   }, [messages]);
 
+  // Set the appropriate title and body class based on version
   useEffect(() => {
     if (version === 'strategy1') {
       setAppTitle('Strategy Test 1');
+      // Remove any other page-specific classes
+      document.body.classList.remove('strategy2-page');
       setMessages([{ text: "Hi, I'm Strategy Test 1. How can I help with your business planning?", isUser: false }]);
     } else if (version === 'strategy2') {
       setAppTitle('Strategy Test 2');
+      // Add strategy2-page class to body for specific background
+      document.body.classList.add('strategy2-page');
       setMessages([{ text: "Hi, I'm Strategy Test 2. I can help with advanced market analysis.", isUser: false }]);
     } else {
       setAppTitle('Differentiator');
+      // Remove any other page-specific classes
+      document.body.classList.remove('strategy2-page');
       setMessages([{ text: "Hi, I'm the Differentiator. How can I help you stand out from competitors?", isUser: false }]);
     }
+    
+    // Clean up function to remove page-specific classes when unmounting
+    return () => {
+      document.body.classList.remove('strategy2-page');
+    };
   }, [version]);
 
   const handleSubmit = async (e: React.FormEvent) => {

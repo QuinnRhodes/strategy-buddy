@@ -41,7 +41,7 @@ export function HomePage() {
         </div>
 
         <div 
-          className="assistant-card" 
+          className="assistant-card strategy2-card" 
           onClick={() => handleSelectAssistant('/strategy2')}
         >
           <div className="assistant-icon">📊</div>
