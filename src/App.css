@@ -11,12 +11,19 @@
   --danger: #ef4444;
 }
 
-body, #root {
+body:not(.home-page), 
+body:not(.home-page) #root {
   min-height: 100vh;
   margin: 0;
   padding: 0;
   background: url('/background.gif') no-repeat center center fixed;
   background-size: cover;
+}
+
+body, #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 .app-container {

@@ -1,8 +1,21 @@
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import '../styles/HomePage.css'; // We'll create this file next
 
 export function HomePage() {
   const navigate = useNavigate();
+
+  // Add 'home-page' class to body when component mounts
+  // Remove it when component unmounts
+  useEffect(() => {
+    // Add the class when component mounts
+    document.body.classList.add('home-page');
+    
+    // Return cleanup function to remove class when unmounted
+    return () => {
+      document.body.classList.remove('home-page');
+    };
+  }, []);
 
   const handleSelectAssistant = (path: string) => {
     navigate(path);

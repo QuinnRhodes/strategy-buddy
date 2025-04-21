@@ -1,11 +1,19 @@
-/* Homepage with static background instead of animated GIF */
+/* Only target the body when on the homepage route */
+body.home-page, 
+body.home-page #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  /* Static gradient background for homepage only */
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
+  background-size: cover;
+}
+
+/* Remove the general body/root background style that would affect all pages */
 body, #root {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  /* Replacing GIF background with a clean gradient background */
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
-  background-size: cover;
 }
 
 .home-container {
