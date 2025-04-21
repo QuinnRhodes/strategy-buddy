@@ -131,39 +131,6 @@ body, #root {
   font-weight: 500;
 }
 
-/* Strategy Test 2 card with background2.gif */
-.strategy2-card {
-  background: url('/background2.gif') no-repeat center center;
-  background-size: cover;
-  position: relative;
-}
-
-.strategy2-card:before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 12px;
-}
-
-.strategy2-card * {
-  position: relative;
-  z-index: 1;
-}
-
-.strategy2-card .assistant-name {
-  color: #111827;
-  font-weight: 700;
-}
-
-.strategy2-card .assistant-description {
-  color: #111827;
-  font-weight: 500;
-}
-
 /* Strategy Test 1 card with background3.gif */
 .strategy1-card {
   background: url('/background3.gif') no-repeat center center;
@@ -197,9 +164,9 @@ body, #root {
   font-weight: 500;
 }
 
-/* Market Research card with distinct styling */
+/* Market Research card with background2.gif */
 .market-research-card {
-  background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  background: url('/background2.gif') no-repeat center center;
   background-size: cover;
   position: relative;
 }
@@ -236,7 +203,7 @@ body.market-research-page #root {
   min-height: 100vh;
   margin: 0;
   padding: 0;
-  background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  background: url('/background2.gif') no-repeat center center;
   background-size: cover;
 }
 

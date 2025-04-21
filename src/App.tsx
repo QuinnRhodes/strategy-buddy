@@ -34,7 +34,7 @@ type SelectedPdf = {
 
 // Define the props type for App
 interface AppProps {
-  version?: 'strategy1' | 'strategy2' | 'marketResearch';
+  version?: 'strategy1' | 'marketResearch';
 }
 
 function App({ version }: AppProps) {
@@ -79,29 +79,18 @@ function App({ version }: AppProps) {
       // Add strategy1-page class for specific background
       document.body.classList.add('strategy1-page');
       // Remove any other page-specific classes
-      document.body.classList.remove('strategy2-page');
       document.body.classList.remove('market-research-page');
       setMessages([{ text: "Hi, I'm Strategy Test 1. How can I help with your business planning?", isUser: false }]);
-    } else if (version === 'strategy2') {
-      setAppTitle('Strategy Test 2');
-      // Add strategy2-page class to body for specific background
-      document.body.classList.add('strategy2-page');
-      // Remove other page-specific classes
-      document.body.classList.remove('strategy1-page');
-      document.body.classList.remove('market-research-page');
-      setMessages([{ text: "Hi, I'm Strategy Test 2. I can help with advanced market analysis.", isUser: false }]);
     } else if (version === 'marketResearch') {
       setAppTitle('Market Research');
       // Add market-research-page class to body for specific background
       document.body.classList.add('market-research-page');
       // Remove other page-specific classes
       document.body.classList.remove('strategy1-page');
-      document.body.classList.remove('strategy2-page');
       setMessages([{ text: "Hi, I'm the Market Research assistant. I can help you analyze market trends and opportunities.", isUser: false }]);
     } else {
       setAppTitle('Differentiator');
       // Remove any other page-specific classes
-      document.body.classList.remove('strategy2-page');
       document.body.classList.remove('strategy1-page');
       document.body.classList.remove('market-research-page');
       setMessages([{ text: "Hi, I'm the Differentiator. How can I help you stand out from competitors?", isUser: false }]);
@@ -109,7 +98,6 @@ function App({ version }: AppProps) {
     
     // Clean up function to remove page-specific classes when unmounting
     return () => {
-      document.body.classList.remove('strategy2-page');
       document.body.classList.remove('strategy1-page');
       document.body.classList.remove('market-research-page');
     };
@@ -118,7 +106,6 @@ function App({ version }: AppProps) {
   // Get the assistant type based on the version
   const getAssistantType = () => {
     if (version === 'strategy1') return 'strategy1' as const;
-    if (version === 'strategy2') return 'strategy2' as const;
     if (version === 'marketResearch') return 'marketResearch' as const;
     return 'default' as const;
   };

@@ -40,12 +40,12 @@ export function HomePage() {
         </div>
 
         <div 
-          className="assistant-card strategy2-card" 
-          onClick={() => handleSelectAssistant('/strategy2')}
+          className="assistant-card market-research-card" 
+          onClick={() => handleSelectAssistant('/market-research')}
         >
-          <h2 className="assistant-name">Strategy Test 2</h2>
+          <h2 className="assistant-name">Market Research</h2>
           <p className="assistant-description">
-            Advanced strategy assistant with market analysis capabilities.
+            Research assistant for market trends, consumer insights, and opportunity analysis.
           </p>
         </div>
 
@@ -56,16 +56,6 @@ export function HomePage() {
           <h2 className="assistant-name">Differentiator</h2>
           <p className="assistant-description">
             Specialized assistant for competitive differentiation and positioning.
-          </p>
-        </div>
-
-        <div 
-          className="assistant-card market-research-card" 
-          onClick={() => handleSelectAssistant('/market-research')}
-        >
-          <h2 className="assistant-name">Market Research</h2>
-          <p className="assistant-description">
-            Research assistant for market trends, consumer insights, and opportunity analysis.
           </p>
         </div>
       </div>
