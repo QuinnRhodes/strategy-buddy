@@ -82,12 +82,12 @@ function App({ version }: AppProps) {
       document.body.classList.remove('market-research-page');
       setMessages([{ text: "Hi, I'm Strategy Test 1. How can I help with your business planning?", isUser: false }]);
     } else if (version === 'marketResearch') {
-      setAppTitle('Market Research');
+      setAppTitle('Strategy Buddy Market Segmentation Tool');
       // Add market-research-page class to body for specific background
       document.body.classList.add('market-research-page');
       // Remove other page-specific classes
       document.body.classList.remove('strategy1-page');
-      setMessages([{ text: "Hi, I'm the Market Research assistant. I can help you analyze market trends and opportunities.", isUser: false }]);
+      setMessages([{ text: "Hi, I'm the Strategy Buddy Market Segmentation Tool. I can help you segment your market to customize messaging, offers, and strategies for each audience.", isUser: false }]);
     } else {
       setAppTitle('Differentiator');
       // Remove any other page-specific classes
