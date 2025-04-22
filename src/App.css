@@ -11,9 +11,8 @@
   --danger: #ef4444;
 }
 
-/* Keep the background only for the Differentiator page */
-body.differentiator-page, 
-body.differentiator-page #root {
+/* Default body/root styling first (lower precedence) */
+body, #root {
   min-height: 100vh;
   margin: 0;
   padding: 0;
@@ -21,32 +20,25 @@ body.differentiator-page #root {
   background-size: cover;
 }
 
-/* Background for Strategy Test 1 page */
+/* Specific page backgrounds (higher precedence) */
+
+/* Background for Strategy Test 1 page - uses background3.gif */
 body.strategy1-page,
 body.strategy1-page #root {
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
   background: url('/background3.gif') no-repeat center center fixed;
   background-size: cover;
 }
 
-/* Background for Market Research/Segmentation page */
+/* Background for Market Research/Segmentation page - uses background2.gif */
 body.market-research-page,
 body.market-research-page #root {
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
   background: url('/background2.gif') no-repeat center center fixed;
   background-size: cover;
 }
 
-/* Keep the default GIF background for the chat/Differentiator page */
-body:not(.home-page):not(.strategy2-page), 
-body:not(.home-page):not(.strategy2-page) #root {
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
+/* Keep the background only for the Differentiator page - uses background.gif */
+body.differentiator-page, 
+body.differentiator-page #root {
   background: url('/background.gif') no-repeat center center fixed;
   background-size: cover;
 }
@@ -54,18 +46,8 @@ body:not(.home-page):not(.strategy2-page) #root {
 /* Background for Strategy Test 2 */
 body.strategy2-page,
 body.strategy2-page #root {
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
   background: url('/background2.gif') no-repeat center center fixed;
   background-size: cover;
-}
-
-/* Default body/root styling */
-body, #root {
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
 }
 
 .app-container {
