@@ -11,6 +11,36 @@
   --danger: #ef4444;
 }
 
+/* Keep the background only for the Differentiator page */
+body.differentiator-page, 
+body.differentiator-page #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: url('/background.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Background for Strategy Test 1 page */
+body.strategy1-page,
+body.strategy1-page #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: url('/background3.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Background for Market Research/Segmentation page */
+body.market-research-page,
+body.market-research-page #root {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background: url('/background2.gif') no-repeat center center fixed;
+  background-size: cover;
+}
+
 /* Keep the default GIF background for the chat/Differentiator page */
 body:not(.home-page):not(.strategy2-page), 
 body:not(.home-page):not(.strategy2-page) #root {
